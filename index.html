@@ -1,0 +1,2400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a1a">
+    <title>Student Calculator Hub</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: rgba(22, 22, 50, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f0f5;
+            --text-secondary: #b0b0c8;
+            --text-muted: #7a7a9a;
+            --accent-purple: #7c5cfc;
+            --accent-blue: #4d8af0;
+            --accent-cyan: #3cc8f0;
+            --accent-pink: #e85d9a;
+            --accent-green: #3dd9a0;
+            --accent-orange: #f0a050;
+            --accent-teal: #3dc8b8;
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(124, 92, 252, 0.15);
+            --radius-card: 22px;
+            --radius-btn: 14px;
+            --radius-input: 12px;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(124, 92, 252, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(77, 138, 240, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 40%, rgba(61, 200, 240, 0.03) 0%, transparent 60%);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+        }
+
+        /* ============ HEADER ============ */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition-smooth);
+        }
+        .header-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(124, 92, 252, 0.3);
+        }
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .header-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #fff;
+            line-height: 1.2;
+        }
+        .header-subtitle {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .btn-icon:active {
+            transform: scale(0.92);
+            transition: 0.1s;
+        }
+
+        /* ============ MAIN CONTAINER ============ */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px 14px 40px;
+        }
+
+        /* ============ CALCULATOR GRID ============ */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 600px) {
+            .calc-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+        }
+        @media (min-width: 900px) {
+            .calc-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+            .main-container {
+                padding: 20px 24px 50px;
+            }
+        }
+
+        /* ============ CALCULATOR CARD ============ */
+        .calc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-card);
+            padding: 18px 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+            user-select: none;
+            -webkit-user-select: none;
+            aspect-ratio: 1 / 1;
+            justify-content: center;
+            min-height: 150px;
+        }
+        .calc-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-card);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .calc-card:hover::before {
+            opacity: 1;
+        }
+        .calc-card.card-purple::before {
+            background: radial-gradient(circle at 50% 30%, rgba(124, 92, 252, 0.2), transparent 70%);
+        }
+        .calc-card.card-blue::before {
+            background: radial-gradient(circle at 50% 30%, rgba(77, 138, 240, 0.2), transparent 70%);
+        }
+        .calc-card.card-cyan::before {
+            background: radial-gradient(circle at 50% 30%, rgba(61, 200, 240, 0.2), transparent 70%);
+        }
+        .calc-card.card-pink::before {
+            background: radial-gradient(circle at 50% 30%, rgba(232, 93, 154, 0.2), transparent 70%);
+        }
+        .calc-card.card-green::before {
+            background: radial-gradient(circle at 50% 30%, rgba(61, 217, 160, 0.2), transparent 70%);
+        }
+        .calc-card.card-orange::before {
+            background: radial-gradient(circle at 50% 30%, rgba(240, 160, 80, 0.2), transparent 70%);
+        }
+        .calc-card.card-teal::before {
+            background: radial-gradient(circle at 50% 30%, rgba(61, 200, 184, 0.2), transparent 70%);
+        }
+        .calc-card.card-indigo::before {
+            background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.2), transparent 70%);
+        }
+        .calc-card.card-rose::before {
+            background: radial-gradient(circle at 50% 30%, rgba(244, 114, 182, 0.2), transparent 70%);
+        }
+        .calc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .calc-card:active {
+            transform: scale(0.95);
+            transition: 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-icon {
+            font-size: 2.6rem;
+            z-index: 1;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        .calc-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 1;
+            color: #fff;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .card-desc {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            z-index: 1;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ============ RECENT SECTION ============ */
+        .recent-section {
+            margin-top: 28px;
+            padding: 16px 0;
+        }
+        .recent-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recent-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .recent-chip {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .recent-chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .recent-chip .chip-icon {
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .recent-chip .chip-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .empty-state {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-style: italic;
+            padding: 8px 0;
+        }
+        .clear-recent {
+            font-size: 0.7rem;
+            color: var(--accent-pink);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: var(--transition-fast);
+            margin-left: auto;
+        }
+        .clear-recent:hover {
+            background: rgba(232, 93, 154, 0.15);
+        }
+
+        /* ============ MODAL OVERLAY ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-sheet {
+            background: #161632;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 650px;
+            max-height: 88vh;
+            max-height: 88dvh;
+            overflow-y: auto;
+            padding: 8px 16px 28px;
+            box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-glass);
+            border-bottom: none;
+        }
+        .modal-overlay.active .modal-sheet {
+            transform: translateY(0);
+        }
+        @media (min-width: 600px) {
+            .modal-overlay {
+                align-items: center;
+            }
+            .modal-sheet {
+                border-radius: 24px;
+                max-height: 85vh;
+                max-height: 85dvh;
+                margin: 20px;
+                transform: translateY(30px) scale(0.94);
+                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .modal-overlay.active .modal-sheet {
+                transform: translateY(0) scale(1);
+            }
+        }
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+            margin: 8px auto 14px;
+            flex-shrink: 0;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: sticky;
+            top: 0;
+            background: #161632;
+            z-index: 10;
+            padding: 4px 0 10px;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .btn-close:hover {
+            background: rgba(255, 60, 80, 0.2);
+            border-color: rgba(255, 100, 120, 0.4);
+        }
+
+        /* ============ FORM ELEMENTS ============ */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            letter-spacing: 0.2px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: var(--radius-input);
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: var(--font-family);
+            transition: var(--transition-fast);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+        select.form-input{
+            appearance:auto;
+            -webkit-appearance:auto;
+            background:rgba(255,255,255,0.04);
+            color:#fff;
+        }
+
+        select.form-input option{
+            background:#1a1a3d;
+            color:#fff;
+        }
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-btn);
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            letter-spacing: 0.2px;
+            font-family: var(--font-family);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), #5b3ff0);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(124, 92, 252, 0.3);
+            width: 100%;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 8px 28px rgba(124, 92, 252, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid var(--border-glass);
+        }
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 0.78rem;
+            border-radius: 10px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+        }
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        /* ============ RESULT BOX ============ */
+        .result-box {
+            background: rgba(124, 92, 252, 0.08);
+            border: 1px solid rgba(124, 92, 252, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 14px;
+            text-align: center;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .result-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff, #c8c8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .result-detail {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .detailed-result{
+            padding:24px;
+            border-radius:20px;
+        }
+
+        .result-table{
+            margin-top:20px;
+        }
+
+        .result-table div{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:12px 0;
+            border-bottom:1px solid rgba(255,255,255,.08);
+        }
+
+        .result-table div:last-child{
+            border-bottom:none;
+        }
+
+        .result-table span{
+            color:var(--text-secondary);
+        }
+
+        .result-table strong{
+            color:#fff;
+            font-weight:700;
+        }
+
+        .gpa-table{
+            width:100%;
+            margin-top:24px;
+            border-collapse:collapse;
+            table-layout:fixed;
+        }
+
+        .gpa-table th,
+        .gpa-table td{
+            padding:16px 12px;
+            text-align:center;
+        }
+
+        .gpa-table th{
+            color:#fff;
+            font-size:0.95rem;
+            font-weight:700;
+            border-bottom:1px solid rgba(255,255,255,.12);
+        }
+
+        .gpa-table td{
+            color:var(--text-secondary);
+            border-bottom:1px solid rgba(255,255,255,.08);
+        }
+
+        .gpa-table tr:last-child td{
+            border-bottom:none;
+        }
+
+        .gpa-table th:first-child,
+        .gpa-table td:first-child{
+            text-align:left;
+            width:35%;
+        }
+
+        .gpa-table th:nth-child(2),
+        .gpa-table td:nth-child(2),
+        .gpa-table th:nth-child(3),
+        .gpa-table td:nth-child(3),
+        .gpa-table th:nth-child(4),
+        .gpa-table td:nth-child(4){
+            width:21%;
+        }
+
+        .gpa-table{
+            width:100%;
+            font-size:0.82rem;
+            table-layout:auto;
+        }
+
+        .gpa-table th,
+        .gpa-table td{
+            padding:8px 4px;
+            white-space:nowrap;
+        }
+
+        .gpa-table th{
+            font-size:0.8rem;
+        }
+
+        .gpa-table td{
+            font-size:0.78rem;
+        }
+
+        /* ============ SCIENTIFIC CALCULATOR ============ */
+        .sci-display {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: right;
+            margin-bottom: 12px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid var(--border-glass);
+        }
+        .sci-expression {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-height: 20px;
+            word-break: break-all;
+            letter-spacing: 0.5px;
+        }
+        .sci-result {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #fff;
+        }
+        .sci-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .sci-btn {
+            padding: 14px 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-family: var(--font-family);
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .sci-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.12);
+            transition: 0.08s;
+        }
+        .sci-btn.func {
+            background: rgba(124, 92, 252, 0.2);
+            border-color: rgba(124, 92, 252, 0.3);
+            font-size: 0.75rem;
+        }
+        .sci-btn.op {
+            background: rgba(77, 138, 240, 0.25);
+            border-color: rgba(77, 138, 240, 0.35);
+            font-size: 1.1rem;
+        }
+        .sci-btn.equals {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            font-size: 1.3rem;
+            grid-column: span 1;
+        }
+        .sci-btn.clear {
+            background: rgba(255, 80, 100, 0.3);
+            border-color: rgba(255, 80, 100, 0.4);
+            color: #ff8899;
+        }
+
+        /* ============ PIE CHART ============ */
+        .pie-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .pie-canvas {
+            width: 120px;
+            height: 120px;
+            flex-shrink: 0;
+        }
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.75rem;
+        }
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pie-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ============ TOAST ============ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: #1e1e40;
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 10px 18px;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            animation: toastIn 0.4s ease-out, toastOut 0.35s ease-in forwards;
+            pointer-events: auto;
+            text-align: center;
+            white-space: nowrap;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes toastOut {
+            0%,
+            70% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* ============ SUBJECT ROW ============ */
+        .subject-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            animation: fadeInUp 0.3s ease-out;
+        }
+        .subject-row .form-input {
+            flex: 1;
+            min-width: 70px;
+        }
+        .subject-row .btn-sm {
+            flex-shrink: 0;
+        }
+
+        /* ============ RESPONSIVE FINE-TUNING ============ */
+        @media (max-width: 380px) {
+            .calc-card {
+                padding: 12px 8px;
+                gap: 4px;
+                min-height: 130px;
+            }
+            .card-icon {
+                font-size: 2rem;
+            }
+            .card-title {
+                font-size: 0.78rem;
+            }
+            .card-desc {
+                font-size: 0.62rem;
+            }
+            .sci-btn {
+                padding: 10px 4px;
+                font-size: 0.78rem;
+            }
+            .sci-btn.func {
+                font-size: 0.65rem;
+            }
+        }
+        @media (min-width: 600px) {
+            .modal-sheet {
+                padding: 8px 24px 32px;
+            }
+            .sci-btn {
+                padding: 16px 8px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ HEADER ============ -->
+    <header class="app-header">
+        <div class="header-logo">🧮</div>
+        <div class="header-info">
+            <div class="header-title">Student Calculator Hub</div>
+            <div class="header-subtitle">Developed By ~ Shankar Prasad Pyke </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-icon" id="btnThemeToggle" title="Toggle theme" aria-label="Toggle theme">🌓</button>
+        </div>
+    </header>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main-container">
+        <!-- Calculator Grid -->
+        <div class="calc-grid" id="calcGrid">
+            <!-- Card 1: Percentage -->
+            <div class="calc-card card-purple" data-calc="percentage">
+                <span class="card-icon">📊</span>
+                <span class="card-title">Percentage</span>
+                <span class="card-desc">Calculate percentages instantly</span>
+            </div>
+            <!-- Card 2: GPA -->
+            <div class="calc-card card-blue" data-calc="gpa">
+                <span class="card-icon">🎓</span>
+                <span class="card-title">GPA Calculator</span>
+                <span class="card-desc">Grade Point Average</span>
+            </div>
+            <!-- Card 3: CGPA -->
+            <div class="calc-card card-cyan" data-calc="cgpa">
+                <span class="card-icon">📈</span>
+                <span class="card-title">CGPA Calculator</span>
+                <span class="card-desc">Cumulative GPA</span>
+            </div>
+            <!-- Card 4: SGPA -->
+            <div class="calc-card card-teal" data-calc="sgpa">
+                <span class="card-icon">📝</span>
+                <span class="card-title">SGPA Calculator</span>
+                <span class="card-desc">Semester GPA</span>
+            </div>
+            <!-- Card 5: Marks Percentage -->
+            <div class="calc-card card-orange" data-calc="marks">
+                <span class="card-icon">📚</span>
+                <span class="card-title">Marks %</span>
+                <span class="card-desc">Marks percentage calc</span>
+            </div>
+            <!-- Card 6: Date Difference -->
+            <div class="calc-card card-indigo" data-calc="date">
+                <span class="card-icon">📅</span>
+                <span class="card-title">Date Diff</span>
+                <span class="card-desc">Days between dates</span>
+            </div>
+            <!-- Card 7: Scientific -->
+            <div class="calc-card card-purple" data-calc="scientific">
+                <span class="card-icon">🔬</span>
+                <span class="card-title">Scientific</span>
+                <span class="card-desc">Advanced calculator</span>
+            </div>
+            <!-- Card 8: EMI -->
+            <div class="calc-card card-green" data-calc="emi">
+                <span class="card-icon">💰</span>
+                <span class="card-title">EMI Calculator</span>
+                <span class="card-desc">Loan EMI & interest</span>
+            </div>
+            <!-- Card 9: Interest -->
+            <div class="calc-card card-rose" data-calc="interest">
+                <span class="card-icon">📈</span>
+                <span class="card-title">Interest</span>
+                <span class="card-desc">Simple & compound</span>
+            </div>
+        </div>
+
+        <!-- Recent Calculations -->
+        <section class="recent-section" id="recentSection">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span class="recent-title">🕐 Recent Calculations</span>
+                <button class="clear-recent" id="btnClearRecent" style="display:none;">Clear All</button>
+            </div>
+            <div class="recent-list" id="recentList">
+                <span class="empty-state" id="emptyRecent">No calculations yet. Tap a calculator to get started!</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ MODAL OVERLAY ============ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-sheet" id="modalSheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Calculator</span>
+                <button class="btn-close" id="btnCloseModal">✕</button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST CONTAINER ============ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ============ DOM REFS ============
+            const calcGrid = document.getElementById('calcGrid');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalSheet = document.getElementById('modalSheet');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const btnCloseModal = document.getElementById('btnCloseModal');
+            const toastContainer = document.getElementById('toastContainer');
+            const recentList = document.getElementById('recentList');
+            const emptyRecent = document.getElementById('emptyRecent');
+            const btnClearRecent = document.getElementById('btnClearRecent');
+            const btnThemeToggle = document.getElementById('btnThemeToggle');
+
+            const STORAGE_KEY = 'studentCalcHub_recent';
+            let currentCalc = null;
+
+            // ============ TOAST ============
+            function showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                toast.style.animationDuration = '0.4s, 2.5s';
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 2800);
+            }
+
+            // ============ LOCAL STORAGE ============
+            function getRecentCalculations() {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveRecentCalculation(calcType, label, result) {
+                // Don't save errors or empty results
+                if (!result || result === 'Error' || result === '0' || result === 'Nothing to copy') return;
+                
+                const recent = getRecentCalculations();
+                
+                // Remove duplicate if exists (same type and result)
+                const filtered = recent.filter(r => !(r.type === calcType && r.result === result));
+                
+                filtered.unshift({
+                    type: calcType,
+                    label: label,
+                    result: result,
+                    timestamp: Date.now(),
+                    icon: getCalcIcon(calcType)
+                });
+                
+                // Keep only last 20
+                const trimmed = filtered.slice(0, 20);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+                renderRecentCalculations();
+            }
+
+            function clearRecentCalculations() {
+                localStorage.removeItem(STORAGE_KEY);
+                renderRecentCalculations();
+                showToast('Recent calculations cleared');
+            }
+
+            function getCalcIcon(type) {
+                const icons = {
+                    percentage: '📊',
+                    gpa: '🎓',
+                    cgpa: '📈',
+                    sgpa: '📝',
+                    marks: '📚',
+                    date: '📅',
+                    scientific: '🔬',
+                    emi: '💰',
+                    interest: '📈'
+                };
+                return icons[type] || '🧮';
+            }
+
+            function renderRecentCalculations() {
+                const recent = getRecentCalculations();
+                if (recent.length === 0) {
+                    recentList.innerHTML = '<span class="empty-state">No calculations yet. Tap a calculator to get started!</span>';
+                    btnClearRecent.style.display = 'none';
+                } else {
+                    btnClearRecent.style.display = 'inline-block';
+                    recentList.innerHTML = recent.slice(0, 8).map((r, index) => `
+                        <div class="recent-chip" data-calc="${r.type}" data-index="${index}" title="${r.label}: ${r.result}">
+                            <span class="chip-icon">${r.icon || getCalcIcon(r.type)}</span>
+                            <span class="chip-text">${r.label}: <strong>${r.result}</strong></span>
+                        </div>
+                    `).join('');
+                    
+                    // Add click handlers to all chips
+                    recentList.querySelectorAll('.recent-chip').forEach(chip => {
+                        chip.addEventListener('click', function() {
+                            const calcType = this.dataset.calc;
+                            if (calcType && calculatorConfigs[calcType]) {
+                                openCalculator(calcType);
+                            }
+                        });
+                    });
+                }
+            }
+
+            // ============ MODAL ============
+            function openCalculator(calcType) {
+                currentCalc = calcType;
+                const config = calculatorConfigs[calcType];
+                if (!config) return;
+                modalTitle.innerHTML = `${config.icon} ${config.title}`;
+                modalContent.innerHTML = config.render();
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                // Initialize calculator-specific logic
+                if (config.init) {
+                    setTimeout(() => config.init(), 100);
+                }
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                currentCalc = null;
+                setTimeout(() => {
+                    modalContent.innerHTML = '';
+                }, 350);
+            }
+
+            btnCloseModal.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            // ============ CARD CLICK HANDLERS ============
+            calcGrid.addEventListener('click', function(e) {
+                const card = e.target.closest('.calc-card');
+                if (!card) return;
+                const calcType = card.dataset.calc;
+                if (calcType) openCalculator(calcType);
+            });
+
+            // ============ COPY TO CLIPBOARD ============
+            function copyToClipboard(text) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('📋 Copied to clipboard!');
+                    }).catch(() => {
+                        fallbackCopy(text);
+                    });
+                } else {
+                    fallbackCopy(text);
+                }
+            }
+
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy');
+                    showToast('📋 Copied!'); } catch (e) { showToast('Failed to copy'); }
+                document.body.removeChild(ta);
+            }
+
+            // ============ CALCULATOR CONFIGURATIONS ============
+            const calculatorConfigs = {
+                percentage: {
+                    icon: '📊',
+                    title: 'Percentage Calculator',
+                    render() {
+                        return `
+                  <div class="form-group">
+                    <label class="form-label">Obtained Value</label>
+                    <input type="number" class="form-input" id="percObtained" placeholder="Enter obtained value" step="any">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Total Value</label>
+                    <input type="number" class="form-input" id="percTotal" placeholder="Enter total value" step="any">
+                  </div>
+                  <button class="btn btn-primary" id="btnCalcPerc">Calculate Percentage</button>
+                  <div id="percResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="percActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnCalcPerc');
+                        const obtainedInput = document.getElementById('percObtained');
+                        const totalInput = document.getElementById('percTotal');
+                        const resultDiv = document.getElementById('percResult');
+                        const actionsDiv = document.getElementById('percActions');
+
+                        btn.addEventListener('click', () => {
+                            const obtained = parseFloat(obtainedInput.value);
+                            const total = parseFloat(totalInput.value);
+                            if (isNaN(obtained) || isNaN(total) || total === 0) {
+                                showToast('⚠️ Please enter valid numbers');
+                                return;
+                            }
+                            const percentage = ((obtained / total) * 100).toFixed(2);
+                            const difference = total - obtained;
+                            const decimal = (obtained / total).toFixed(4);
+
+                            let grade = '';
+
+                            if (percentage >= 90) grade = 'A+';
+                            else if (percentage >= 80) grade = 'A';
+                            else if (percentage >= 70) grade = 'B+';
+                            else if (percentage >= 60) grade = 'B';
+                            else if (percentage >= 50) grade = 'C';
+                            else if (percentage >= 40) grade = 'D';
+                            else grade = 'F';
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result">
+
+                                <div class="result-value">${percentage}%</div>
+
+                                <div class="result-table">
+
+                                    <div>
+                                        <span>Obtained</span>
+                                        <strong>${obtained}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Total</span>
+                                        <strong>${total}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Fraction</span>
+                                        <strong>${obtained}/${total}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Decimal</span>
+                                        <strong>${decimal}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Difference</span>
+                                        <strong>${difference}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Grade</span>
+                                        <strong>${grade}</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('percentage', 'Percentage',
+                                `${percentage}% (${obtained}/${total})`);
+                            // Copy button
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(
+                                `${percentage}%`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                obtainedInput.value = '';
+                                totalInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                gpa: {
+                    icon: '🎓',
+                    title: 'GPA Calculator',
+                    render() {
+                        return `
+                  <div id="gpaSubjects">
+                    ${this.generateSubjectRow(1)}
+                    ${this.generateSubjectRow(2)}
+                    ${this.generateSubjectRow(3)}
+                    ${this.generateSubjectRow(4)}
+                  </div>
+                  <button class="btn btn-sm btn-outline" id="btnAddGpaSubject" style="margin-bottom:12px;">+ Add Subject</button>
+                  <button class="btn btn-primary" id="btnCalcGpa">Calculate GPA</button>
+                  <div id="gpaResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="gpaActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    generateSubjectRow(n) {
+                        return `
+                  <div class="subject-row gpa-subject-row">
+                    <input type="text" class="form-input" placeholder="Subject ${n}" style="min-width:80px;flex:2;">
+                    <select class="form-input gpa-grade" style="flex:1.5;min-width:70px;">
+                        <option value="">Grade</option>
+                        <option value="10">O (10)</option>
+                        <option value="9">A+ (9)</option>
+                        <option value="8">A (8)</option>
+                        <option value="7">B+ (7)</option>
+                        <option value="6">B (6)</option>
+                        <option value="5">C (5)</option>
+                        <option value="0">F (0)</option>
+                    </select>
+                    <input type="number" class="form-input gpa-credit" placeholder="Credits" step="any" min="0" style="flex:1;min-width:55px;">
+                    <button class="btn btn-sm btn-outline remove-gpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const container = document.getElementById('gpaSubjects');
+                        const btnAdd = document.getElementById('btnAddGpaSubject');
+                        const btnCalc = document.getElementById('btnCalcGpa');
+                        const resultDiv = document.getElementById('gpaResult');
+                        const actionsDiv = document.getElementById('gpaActions');
+                        let rowCount = 4;
+
+                        btnAdd.addEventListener('click', () => {
+                            rowCount++;
+                            const row = document.createElement('div');
+                            row.className = 'subject-row gpa-subject-row';
+                            row.innerHTML = `
+                        <input type="text" class="form-input" placeholder="Subject ${rowCount}" style="min-width:80px;flex:2;">
+                        <select class="form-input gpa-grade" style="flex:1.5;min-width:70px;">
+                            <option value="">Grade</option>
+                            <option value="10">O (10)</option>
+                            <option value="9">A+ (9)</option>
+                            <option value="8">A (8)</option>
+                            <option value="7">B+ (7)</option>
+                            <option value="6">B (6)</option>
+                            <option value="5">C (5)</option>
+                            <option value="0">F (0)</option>
+                        </select>
+                        <input type="number" class="form-input gpa-credit" placeholder="Credits" step="any" min="0" style="flex:1;min-width:55px;">
+                        <button class="btn btn-sm btn-outline remove-gpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                      `;
+                            container.appendChild(row);
+                            row.querySelector('.remove-gpa-row').addEventListener('click', () => row
+                                .remove());
+                        });
+
+                        // Add remove handlers to initial rows
+                        container.querySelectorAll('.remove-gpa-row').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const row = this.closest('.gpa-subject-row');
+                                if (container.querySelectorAll('.gpa-subject-row')
+                                    .length > 1) {
+                                    row.remove();
+                                } else {
+                                    showToast('Need at least 1 subject');
+                                }
+                            });
+                        });
+
+                        btnCalc.addEventListener('click', () => {
+                            const rows = container.querySelectorAll('.gpa-subject-row');
+                            let totalPoints = 0;
+                            let totalCredits = 0;
+                            let valid = true;
+                            rows.forEach(row => {
+                                const grade = parseFloat(row.querySelector('.gpa-grade')
+                                    .value);
+                                const credit = parseFloat(row.querySelector('.gpa-credit')
+                                    .value);
+                                if (!isNaN(grade) && !isNaN(credit) && credit > 0) {
+                                    totalPoints += grade * credit;
+                                    totalCredits += credit;
+                                } else if (row.querySelector('.gpa-grade').value ||
+                                    row.querySelector('.gpa-credit').value) {
+                                    valid = false;
+                                }
+                            });
+                            if (!valid || totalCredits === 0) {
+                                showToast('⚠️ Please fill all grade & credit fields');
+                                return;
+                            }
+                            const gpa = (totalPoints / totalCredits).toFixed(2);
+
+                            let tableRows = '';
+
+                            rows.forEach(row => {
+                                const subject = row.querySelector('input[type="text"]').value || '-';
+                                const grade = row.querySelector('.gpa-grade').value;
+                                const credit = parseFloat(row.querySelector('.gpa-credit').value);
+
+                                if (!isNaN(grade) && !isNaN(credit) && credit > 0) {
+                                    const points = (grade * credit).toFixed(1);
+
+                                    tableRows += `
+                                    <tr>
+                                        <td>${subject}</td>
+                                        <td>${grade}</td>
+                                        <td>${credit}</td>
+                                        <td>${points}</td>
+                                    </tr>`;
+                                }
+                            });
+
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result">
+
+                                <div class="result-value">GPA: ${gpa}</div>
+
+                                <div class="result-detail">
+                                    Total Credits: ${totalCredits} | Grade Points: ${totalPoints.toFixed(1)}
+                                </div>
+
+                                <table class="gpa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                            <th>Credits</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${tableRows}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('gpa', 'GPA', `${gpa} (${totalCredits} credits)`);
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(`GPA: ${gpa}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                                container.querySelectorAll('.gpa-grade').forEach(s => s
+                                    .value = '');
+                                container.querySelectorAll('.gpa-credit').forEach(i => i
+                                    .value = '');
+                                container.querySelectorAll('input[type="text"]')
+                                    .forEach(i => i.value = '');
+                            };
+                        });
+                    }
+                },
+
+                cgpa: {
+                    icon: '📈',
+                    title: 'CGPA Calculator',
+                    render() {
+                        return `
+                  <div id="cgpaSemesters">
+                    <div class="subject-row cgpa-row">
+                      <input type="number" class="form-input cgpa-input" placeholder="Semester 1 GPA" step="any" min="0" max="10" style="flex:2;">
+                      <button class="btn btn-sm btn-outline remove-cgpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                    </div>
+                    <div class="subject-row cgpa-row">
+                      <input type="number" class="form-input cgpa-input" placeholder="Semester 2 GPA" step="any" min="0" max="10" style="flex:2;">
+                      <button class="btn btn-sm btn-outline remove-cgpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                    </div>
+                  </div>
+                  <button class="btn btn-sm btn-outline" id="btnAddCgpaSem" style="margin-bottom:12px;">+ Add Semester</button>
+                  <button class="btn btn-primary" id="btnCalcCgpa">Calculate CGPA</button>
+                  <div id="cgpaResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="cgpaActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const container = document.getElementById('cgpaSemesters');
+                        const btnAdd = document.getElementById('btnAddCgpaSem');
+                        const btnCalc = document.getElementById('btnCalcCgpa');
+                        const resultDiv = document.getElementById('cgpaResult');
+                        const actionsDiv = document.getElementById('cgpaActions');
+                        let semCount = 2;
+
+                        btnAdd.addEventListener('click', () => {
+                            semCount++;
+                            const row = document.createElement('div');
+                            row.className = 'subject-row cgpa-row';
+                            row.innerHTML = `
+                        <input type="number" class="form-input cgpa-input" placeholder="Semester ${semCount} GPA" step="any" min="0" max="10" style="flex:2;">
+                        <button class="btn btn-sm btn-outline remove-cgpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                      `;
+                            container.appendChild(row);
+                            row.querySelector('.remove-cgpa-row').addEventListener('click', () => {
+                                if (container.querySelectorAll('.cgpa-row').length > 1)
+                                    row.remove();
+                                else showToast('Need at least 1 semester');
+                            });
+                        });
+
+                        container.querySelectorAll('.remove-cgpa-row').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const row = this.closest('.cgpa-row');
+                                if (container.querySelectorAll('.cgpa-row').length > 1)
+                                    row.remove();
+                                else showToast('Need at least 1 semester');
+                            });
+                        });
+
+                        btnCalc.addEventListener('click', () => {
+                            const inputs = container.querySelectorAll('.cgpa-input');
+                            let sum = 0;
+                            let count = 0;
+                            inputs.forEach(inp => {
+                                const val = parseFloat(inp.value);
+                                if (!isNaN(val) && val >= 0) {
+                                    sum += val;
+                                    count++;
+                                }
+                            });
+                            if (count === 0) {
+                                showToast('⚠️ Please enter at least one GPA');
+                                return;
+                            }
+                            const cgpa = (sum / count).toFixed(2);
+                            resultDiv.innerHTML = `
+                        <div class="result-box">
+                          <div class="result-label">Overall CGPA</div>
+                          <div class="result-value">${cgpa}</div>
+                          <div class="result-detail">Across ${count} semester(s)</div>
+                        </div>
+                      `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('cgpa', 'CGPA', `${cgpa} (${count} semesters)`);
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(`CGPA: ${cgpa}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                                inputs.forEach(i => i.value = '');
+                            };
+                        });
+                    }
+                },
+
+                sgpa: {
+                    icon: '📝',
+                    title: 'SGPA Calculator',
+                    render() {
+                        // SGPA is essentially the same as GPA for a single semester
+                        return calculatorConfigs.gpa.render()
+                            .replace(/GPA/g, 'SGPA')
+                            .replace(/gpa-subject-row/g, 'sgpa-subject-row')
+                            .replace(/gpa-grade/g, 'sgpa-grade')
+                            .replace(/gpa-credit/g, 'sgpa-credit')
+                            .replace(/remove-gpa-row/g, 'remove-sgpa-row')
+                            .replace(/btnCalcGpa/g, 'btnCalcSgpa')
+                            .replace(/btnAddGpaSubject/g, 'btnAddSgpaSubject')
+                            .replace(/gpaSubjects/g, 'sgpaSubjects')
+                            .replace(/gpaResult/g, 'sgpaResult')
+                            .replace(/gpaActions/g, 'sgpaActions');
+                    },
+                    init() {
+                        const container = document.getElementById('sgpaSubjects');
+                        const btnAdd = document.getElementById('btnAddSgpaSubject');
+                        const btnCalc = document.getElementById('btnCalcSgpa');
+                        const resultDiv = document.getElementById('sgpaResult');
+                        const actionsDiv = document.getElementById('sgpaActions');
+                        if (!btnCalc) return;
+                        let rowCount = 4;
+
+                        btnAdd.addEventListener('click', () => {
+                            rowCount++;
+                            const row = document.createElement('div');
+                            row.className = 'subject-row sgpa-subject-row';
+                            row.innerHTML = `
+                                <input type="text" class="form-input" placeholder="Subject ${rowCount}" style="min-width:80px;flex:2;">
+                                <select class="form-input sgpa-grade" style="flex:1.5;min-width:70px;">
+                                    <option value="">Grade</option>
+                                    <option value="10">O (10)</option>
+                                    <option value="9">A+ (9)</option>
+                                    <option value="8">A (8)</option>
+                                    <option value="7">B+ (7)</option>
+                                    <option value="6">B (6)</option>
+                                    <option value="5">C (5)</option>
+                                    <option value="0">F (0)</option>
+                                </select>
+                                <input type="number" class="form-input sgpa-credit" placeholder="Credits" step="any" min="0" style="flex:1;min-width:55px;">
+                                <button class="btn btn-sm btn-outline remove-sgpa-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                            `;
+                            container.appendChild(row);
+                            row.querySelector('.remove-sgpa-row').addEventListener('click', () => row.remove());
+                        });
+
+                        container.querySelectorAll('.remove-sgpa-row').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const row = this.closest('.sgpa-subject-row');
+                                if (container.querySelectorAll('.sgpa-subject-row').length > 1) row.remove();
+                                else showToast('Need at least 1 subject');
+                            });
+                        });
+
+                        btnCalc.addEventListener('click', () => {
+                            const rows = container.querySelectorAll('.sgpa-subject-row');
+                            let totalPoints = 0;
+                            let totalCredits = 0;
+                            let valid = true;
+                            
+                            rows.forEach(row => {
+                                const grade = parseFloat(row.querySelector('.sgpa-grade').value);
+                                const credit = parseFloat(row.querySelector('.sgpa-credit').value);
+                                if (!isNaN(grade) && !isNaN(credit) && credit > 0) {
+                                    totalPoints += grade * credit;
+                                    totalCredits += credit;
+                                } else if (row.querySelector('.sgpa-grade').value || row.querySelector('.sgpa-credit').value) {
+                                    valid = false;
+                                }
+                            });
+                            
+                            if (!valid || totalCredits === 0) {
+                                showToast('⚠️ Please fill all grade & credit fields correctly');
+                                return;
+                            }
+                            
+                            const sgpa = (totalPoints / totalCredits).toFixed(2);
+
+                            // Build detailed table
+                            let tableRows = '';
+                            rows.forEach(row => {
+                                const subject = row.querySelector('input[type="text"]').value || '-';
+                                const gradeValue = parseFloat(row.querySelector('.sgpa-grade').value);
+                                const creditValue = parseFloat(row.querySelector('.sgpa-credit').value);
+                                
+                                if (!isNaN(gradeValue) && !isNaN(creditValue) && creditValue > 0) {
+                                    const points = (gradeValue * creditValue).toFixed(1);
+                                    tableRows += `
+                                    <tr>
+                                        <td>${subject}</td>
+                                        <td>${gradeValue}</td>
+                                        <td>${creditValue}</td>
+                                        <td>${points}</td>
+                                    </tr>`;
+                                }
+                            });
+
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result">
+                                <div class="result-value">SGPA: ${sgpa}</div>
+                                <div class="result-detail">
+                                    Total Credits: ${totalCredits} | Grade Points: ${totalPoints.toFixed(1)}
+                                </div>
+                                <table class="gpa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                            <th>Credits</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${tableRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('sgpa', 'SGPA', `${sgpa} (${totalCredits} credits)`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`SGPA: ${sgpa}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                                container.querySelectorAll('.sgpa-grade').forEach(s => s.value = '');
+                                container.querySelectorAll('.sgpa-credit').forEach(i => i.value = '');
+                                container.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+                            };
+                        });
+                    }
+                },
+
+                marks: {
+                    icon: '📚',
+                    title: 'Marks Percentage Calculator',
+                    render() {
+                        return `
+                  <div id="marksSubjects">
+                    <div class="subject-row marks-row">
+                      <input type="text" class="form-input" placeholder="Subject name" style="flex:2;min-width:70px;">
+                      <input type="number" class="form-input marks-obtained" placeholder="Obtained" step="any" min="0" style="flex:1;min-width:60px;">
+                      <input type="number" class="form-input marks-total" placeholder="Total" step="any" min="0" style="flex:1;min-width:55px;">
+                      <button class="btn btn-sm btn-outline remove-marks-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                    </div>
+                    <div class="subject-row marks-row">
+                      <input type="text" class="form-input" placeholder="Subject name" style="flex:2;min-width:70px;">
+                      <input type="number" class="form-input marks-obtained" placeholder="Obtained" step="any" min="0" style="flex:1;min-width:60px;">
+                      <input type="number" class="form-input marks-total" placeholder="Total" step="any" min="0" style="flex:1;min-width:55px;">
+                      <button class="btn btn-sm btn-outline remove-marks-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                    </div>
+                  </div>
+                  <button class="btn btn-sm btn-outline" id="btnAddMarksRow" style="margin-bottom:12px;">+ Add Subject</button>
+                  <button class="btn btn-primary" id="btnCalcMarks">Calculate Percentage</button>
+                  <div id="marksResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="marksActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const container = document.getElementById('marksSubjects');
+                        const btnAdd = document.getElementById('btnAddMarksRow');
+                        const btnCalc = document.getElementById('btnCalcMarks');
+                        const resultDiv = document.getElementById('marksResult');
+                        const actionsDiv = document.getElementById('marksActions');
+
+                        btnAdd.addEventListener('click', () => {
+                            const row = document.createElement('div');
+                            row.className = 'subject-row marks-row';
+                            row.innerHTML = `
+                        <input type="text" class="form-input" placeholder="Subject name" style="flex:2;min-width:70px;">
+                        <input type="number" class="form-input marks-obtained" placeholder="Obtained" step="any" min="0" style="flex:1;min-width:60px;">
+                        <input type="number" class="form-input marks-total" placeholder="Total" step="any" min="0" style="flex:1;min-width:55px;">
+                        <button class="btn btn-sm btn-outline remove-marks-row" style="color:#ff6688;border-color:rgba(255,100,130,0.3);">✕</button>
+                      `;
+                            container.appendChild(row);
+                            row.querySelector('.remove-marks-row').addEventListener('click', () => {
+                                if (container.querySelectorAll('.marks-row').length > 1) row
+                                    .remove();
+                                else showToast('Need at least 1 subject');
+                            });
+                        });
+
+                        container.querySelectorAll('.remove-marks-row').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const row = this.closest('.marks-row');
+                                if (container.querySelectorAll('.marks-row').length > 1) row
+                                    .remove();
+                                else showToast('Need at least 1 subject');
+                            });
+                        });
+
+                        btnCalc.addEventListener('click', () => {
+                            const rows = container.querySelectorAll('.marks-row');
+                            let totalObtained = 0,
+                                totalMax = 0;
+                            rows.forEach(row => {
+                                const obt = parseFloat(row.querySelector('.marks-obtained')
+                                    .value);
+                                const tot = parseFloat(row.querySelector('.marks-total')
+                                    .value);
+                                if (!isNaN(obt) && !isNaN(tot) && tot > 0) {
+                                    totalObtained += obt;
+                                    totalMax += tot;
+                                }
+                            });
+                            if (totalMax === 0) {
+                                showToast('⚠️ Please enter valid marks');
+                                return;
+                            }
+                            const pct = ((totalObtained / totalMax) * 100).toFixed(2);
+                            let tableRows = '';
+
+                            rows.forEach(row => {
+                                const subject = row.querySelector('input[type="text"]').value || '-';
+
+                                const obt = parseFloat(row.querySelector('.marks-obtained').value);
+                                const tot = parseFloat(row.querySelector('.marks-total').value);
+
+                                if (!isNaN(obt) && !isNaN(tot) && tot > 0) {
+                                    const subPct = ((obt / tot) * 100).toFixed(1);
+
+                                    tableRows += `
+                                    <tr>
+                                        <td>${subject}</td>
+                                        <td>${obt}</td>
+                                        <td>${tot}</td>
+                                        <td>${subPct}%</td>
+                                    </tr>`;
+                                }
+                            });
+
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result marks-result-card">
+
+                                <div class="result-value">${pct}%</div>
+
+                                <div class="result-detail">
+                                    Total ${totalObtained} / ${totalMax}
+                                </div>
+
+                                <table class="gpa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Obt.</th>
+                                            <th>Total</th>
+                                            <th>%</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        ${tableRows}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('marks', 'Marks %',
+                                `${pct}% (${totalObtained}/${totalMax})`);
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(`${pct}%`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                                container.querySelectorAll('.marks-obtained, .marks-total')
+                                    .forEach(i => i.value = '');
+                                container.querySelectorAll('input[type="text"]').forEach(
+                                    i => i.value = '');
+                            };
+                        });
+                    }
+                },
+
+                date: {
+                    icon: '📅',
+                    title: 'Date Difference Calculator',
+                    render() {
+                        return `
+                  <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-input" id="dateStart">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-input" id="dateEnd">
+                  </div>
+                  <button class="btn btn-primary" id="btnCalcDate">Calculate Difference</button>
+                  <div id="dateResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="dateActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const btnCalc = document.getElementById('btnCalcDate');
+                        const startInput = document.getElementById('dateStart');
+                        const endInput = document.getElementById('dateEnd');
+                        const resultDiv = document.getElementById('dateResult');
+                        const actionsDiv = document.getElementById('dateActions');
+
+                        btnCalc.addEventListener('click', () => {
+                            const start = new Date(startInput.value);
+                            const end = new Date(endInput.value);
+                            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                                showToast('⚠️ Please select both dates');
+                                return;
+                            }
+                            const diffMs = Math.abs(end - start);
+                            const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                            let years = end.getFullYear() - start.getFullYear();
+                            let months = end.getMonth() - start.getMonth();
+                            let days = end.getDate() - start.getDate();
+                            if (days < 0) { months--;
+                                days += new Date(end.getFullYear(), end.getMonth(), 0)
+                                    .getDate(); }
+                            if (months < 0) { years--;
+                                months += 12; }
+                            if (years < 0) years = 0;
+                            resultDiv.innerHTML = `
+                        <div class="result-box">
+                          <div class="result-label">Date Difference</div>
+                          <div class="result-value">${totalDays} Days</div>
+                          <div class="result-detail">${years} years, ${months} months, ${days} days</div>
+                        </div>
+                      `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('date', 'Date Diff',
+                                `${totalDays} days`);
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(
+                                    `${totalDays} days (${years}y ${months}m ${days}d)`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                startInput.value = '';
+                                endInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                scientific: {
+                    icon: '🔬',
+                    title: 'Scientific Calculator',
+                    render() {
+                        return `
+                  <div class="sci-display">
+                    <div class="sci-expression" id="sciExpr"></div>
+                    <div class="sci-result" id="sciResult">0</div>
+                  </div>
+                  <div class="sci-grid" id="sciGrid">
+                    <button class="sci-btn func">sin</button>
+                    <button class="sci-btn func">cos</button>
+                    <button class="sci-btn func">tan</button>
+                    <button class="sci-btn func">log</button>
+                    <button class="sci-btn func">√</button>
+                    <button class="sci-btn func">x²</button>
+                    <button class="sci-btn func">xʸ</button>
+                    <button class="sci-btn func">(</button>
+                    <button class="sci-btn func">)</button>
+                    <button class="sci-btn">7</button>
+                    <button class="sci-btn">8</button>
+                    <button class="sci-btn">9</button>
+                    <button class="sci-btn op">÷</button>
+                    <button class="sci-btn">4</button>
+                    <button class="sci-btn">5</button>
+                    <button class="sci-btn">6</button>
+                    <button class="sci-btn op">×</button>
+                    <button class="sci-btn">1</button>
+                    <button class="sci-btn">2</button>
+                    <button class="sci-btn">3</button>
+                    <button class="sci-btn op">−</button>
+                    <button class="sci-btn">0</button>
+                    <button class="sci-btn">.</button>
+                    <button class="sci-btn clear">⌫</button>
+                    <button class="sci-btn op">+</button>
+                    <button class="sci-btn equals" style="grid-column:span 2;">=</button>
+                  </div>
+                  <div class="btn-row" style="margin-top:8px;">
+                    <button class="btn btn-sm btn-outline copy-result-btn" id="btnSciCopy">📋 Copy Result</button>
+                    <button class="btn btn-sm btn-outline" id="btnSciClearAll">🔄 Clear All</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const exprEl = document.getElementById('sciExpr');
+                        const resultEl = document.getElementById('sciResult');
+                        const grid = document.getElementById('sciGrid');
+                        let expression = '';
+                        let lastResult = '0';
+
+                        function updateDisplay() {
+                            exprEl.textContent = expression || '';
+                            resultEl.textContent = lastResult;
+                        }
+
+                        function evaluate() {
+                            if (!expression.trim()) return;
+                            try {
+                                let expr = expression
+                                    .replace(/×/g, '*')
+                                    .replace(/÷/g, '/')
+                                    .replace(/−/g, '-')
+                                    .replace(/sin/g, 'Math.sin')
+                                    .replace(/cos/g, 'Math.cos')
+                                    .replace(/tan/g, 'Math.tan')
+                                    .replace(/log/g, 'Math.log10')
+                                    .replace(/√/g, 'Math.sqrt')
+                                    .replace(/x²/g, '**2')
+                                    .replace(/xʸ/g, '**')
+                                    .replace(/π/g, 'Math.PI');
+                                // Handle implicit multiplication like 2(3) -> 2*(3)
+                                expr = expr.replace(/(\d)\(/g, '$1*(');
+                                const result = Function('"use strict"; return (' + expr + ')')();
+                                lastResult = Number.isFinite(result) ? parseFloat(result.toPrecision(12))
+                                    .toString() : 'Error';
+                                if (lastResult === 'Error') expression = '';
+                            } catch (e) {
+                                lastResult = 'Error';
+                            }
+                            updateDisplay();
+                        }
+
+                        grid.addEventListener('click', function(e) {
+                            const btn = e.target.closest('.sci-btn');
+                            if (!btn) return;
+                            const text = btn.textContent.trim();
+
+                            if (text === '⌫') {
+                                expression = expression.slice(0, -1) || '';
+                                if (!expression) lastResult = '0';
+                            } else if (text === '=') {
+                                const exprBeforeEval = expression;
+                                evaluate();
+                                if (lastResult !== 'Error' && lastResult !== '0') {
+                                    saveRecentCalculation('scientific', 'Scientific',
+                                        `${exprBeforeEval || '?'} = ${lastResult}`);
+                                }
+                                expression = lastResult !== 'Error' ? lastResult : '';
+                                return;
+                            } else if (['sin', 'cos', 'tan', 'log'].includes(text)) {
+                                expression += text + '(';
+                            } else if (text === '√') {
+                                expression += '√(';
+                            } else if (text === 'x²') {
+                                expression += 'x²';
+                            } else if (text === 'xʸ') {
+                                expression += 'xʸ';
+                            } else {
+                                expression += text;
+                            }
+                            updateDisplay();
+                            if (lastResult === 'Error') lastResult = '0';
+                        });
+
+                        document.getElementById('btnSciCopy').addEventListener('click', () => {
+                            if (lastResult && lastResult !== 'Error' && lastResult !== '0') {
+                                copyToClipboard(lastResult);
+                                showToast('Result copied!');
+                            } else {
+                                showToast('Nothing to copy');
+                            }
+                        });
+                        document.getElementById('btnSciClearAll').addEventListener('click', () => {
+                            expression = '';
+                            lastResult = '0';
+                            updateDisplay();
+                        });
+
+                        updateDisplay();
+                    }
+                },
+
+                emi: {
+                    icon: '💰',
+                    title: 'EMI Calculator',
+                    render() {
+                        return `
+                  <div class="form-group">
+                    <label class="form-label">Loan Amount (₹)</label>
+                    <input type="number" class="form-input" id="emiPrincipal" placeholder="e.g. 500000" step="any" min="0">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Annual Interest Rate (%)</label>
+                    <input type="number" class="form-input" id="emiRate" placeholder="e.g. 8.5" step="any" min="0">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Loan Tenure (Months)</label>
+                    <input type="number" class="form-input" id="emiTenure" placeholder="e.g. 36" step="any" min="1">
+                  </div>
+                  <button class="btn btn-primary" id="btnCalcEmi">Calculate EMI</button>
+                  <div id="emiResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="emiActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const btnCalc = document.getElementById('btnCalcEmi');
+                        const principalInput = document.getElementById('emiPrincipal');
+                        const rateInput = document.getElementById('emiRate');
+                        const tenureInput = document.getElementById('emiTenure');
+                        const resultDiv = document.getElementById('emiResult');
+                        const actionsDiv = document.getElementById('emiActions');
+
+                        btnCalc.addEventListener('click', () => {
+                            const P = parseFloat(principalInput.value);
+                            const annualRate = parseFloat(rateInput.value);
+                            const N = parseInt(tenureInput.value);
+                            if (isNaN(P) || isNaN(annualRate) || isNaN(N) || P <= 0 || N <= 0 ||
+                                annualRate < 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+                            const r = annualRate / 12 / 100;
+                            const emi = (P * r * Math.pow(1 + r, N)) / (Math.pow(1 + r, N) - 1);
+                            const totalPayable = emi * N;
+                            const totalInterest = totalPayable - P;
+                            const principalPct = (P / totalPayable * 100).toFixed(1);
+                            const interestPct = (totalInterest / totalPayable * 100).toFixed(1);
+
+                            let scheduleHTML = '';
+                            let balance = P;
+
+                            for (let month = 1; month <= Math.min(N, 12); month++) {
+                                const interestPart = balance * r;
+                                const principalPart = emi - interestPart;
+
+                                balance -= principalPart;
+
+                                scheduleHTML += `
+                                <tr>
+                                    <td>${month}</td>
+                                    <td>₹${emi.toFixed(0)}</td>
+                                    <td>₹${interestPart.toFixed(0)}</td>
+                                    <td>₹${principalPart.toFixed(0)}</td>
+                                    <td>₹${Math.max(0,balance).toFixed(0)}</td>
+                                </tr>`;
+                            }
+
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result">
+
+                                <div class="result-value">
+                                    ₹${emi.toFixed(0)}/mo
+                                </div>
+
+                                <div class="result-detail">
+                                    Total Interest: ₹${totalInterest.toFixed(0)}
+                                    |
+                                    Total Payable: ₹${totalPayable.toFixed(0)}
+                                </div>
+
+                                <div class="pie-container">
+                                    <canvas id="emiPieChart" class="pie-canvas" width="120" height="120"></canvas>
+                                </div>
+
+                                <button class="btn btn-sm btn-outline"
+                                    id="toggleSchedule"
+                                    style="margin-top:15px;">
+                                    Show Schedule ▼
+                                </button>
+
+                                <div id="scheduleTable"
+                                    style="display:none;margin-top:15px;">
+
+                                    <table class="gpa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Month</th>
+                                                <th>EMI</th>
+                                                <th>Interest</th>
+                                                <th>Principal</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            ${scheduleHTML}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('emi', 'EMI',
+                                `₹${emi.toFixed(2)}/mo (Total: ₹${totalPayable.toFixed(0)})`);
+
+                            // Draw pie chart
+                            setTimeout(() => {
+                                const canvas = document.getElementById('emiPieChart');
+                                if (canvas) {
+                                    const ctx = canvas.getContext('2d');
+                                    const total = P + totalInterest;
+                                    const pAngle = (P / total) * Math.PI * 2;
+                                    ctx.clearRect(0, 0, 120, 120);
+                                    ctx.beginPath();
+                                    ctx.moveTo(60, 60);
+                                    ctx.arc(60, 60, 50, -Math.PI / 2, -Math.PI / 2 + pAngle);
+                                    ctx.fillStyle = '#7c5cfc';
+                                    ctx.fill();
+                                    ctx.beginPath();
+                                    ctx.moveTo(60, 60);
+                                    ctx.arc(60, 60, 50, -Math.PI / 2 + pAngle, -Math.PI / 2 + Math
+                                        .PI * 2);
+                                    ctx.fillStyle = '#e85d9a';
+                                    ctx.fill();
+                                }
+                            }, 150);
+
+                            document.getElementById('toggleSchedule').addEventListener('click', function () {
+
+                                const table = document.getElementById('scheduleTable');
+
+                                if (table.style.display === 'none') {
+                                    table.style.display = 'block';
+                                    this.textContent = 'Hide Schedule ▲';
+                                } else {
+                                    table.style.display = 'none';
+                                    this.textContent = 'Show Schedule ▼';
+                                }
+
+                            });
+
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(
+                                    `EMI: ₹${emi.toFixed(2)}/month | Total: ₹${totalPayable.toFixed(2)}`
+                                    );
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                principalInput.value = '';
+                                rateInput.value = '';
+                                tenureInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                interest: {
+                    icon: '📈',
+                    title: 'Interest Calculator',
+                    render() {
+                        return `
+                  <div class="form-group">
+                    <label class="form-label">Investment Amount (₹)</label>
+                    <input type="number" class="form-input" id="intPrincipal" placeholder="e.g. 100000" step="any" min="0">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Annual Interest Rate (%)</label>
+                    <input type="number" class="form-input" id="intRate" placeholder="e.g. 7.5" step="any" min="0">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Time Period (Years)</label>
+                    <input type="number" class="form-input" id="intTime" placeholder="e.g. 5" step="any" min="0">
+                  </div>
+                  <button class="btn btn-primary" id="btnCalcInterest">Calculate Interest</button>
+                  <div id="intResult" style="margin-top:12px;"></div>
+                  <div class="btn-row" id="intActions" style="display:none;">
+                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                  </div>
+                `;
+                    },
+                    init() {
+                        const btnCalc = document.getElementById('btnCalcInterest');
+                        const principalInput = document.getElementById('intPrincipal');
+                        const rateInput = document.getElementById('intRate');
+                        const timeInput = document.getElementById('intTime');
+                        const resultDiv = document.getElementById('intResult');
+                        const actionsDiv = document.getElementById('intActions');
+
+                        btnCalc.addEventListener('click', () => {
+                            const P = parseFloat(principalInput.value);
+                            const R = parseFloat(rateInput.value);
+                            const T = parseFloat(timeInput.value);
+                            if (isNaN(P) || isNaN(R) || isNaN(T) || P <= 0 || T <= 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+                            const simpleInterest = (P * R * T) / 100;
+                            const compoundMaturity = P * Math.pow(1 + R / 100, T);
+                            const compoundInterest = compoundMaturity - P;
+
+                            let yearlyRows = '';
+                            let balance = P;
+
+                            for (let year = 1; year <= Math.min(T, 10); year++) {
+
+                                const startBalance = balance;
+                                const yearlyInterest = balance * (R / 100);
+
+                                balance += yearlyInterest;
+
+                                yearlyRows += `
+                                <tr>
+                                    <td>${year}</td>
+                                    <td>₹${startBalance.toFixed(0)}</td>
+                                    <td>₹${yearlyInterest.toFixed(0)}</td>
+                                    <td>₹${balance.toFixed(0)}</td>
+                                </tr>`;
+                            }
+
+                            resultDiv.innerHTML = `
+                            <div class="result-box detailed-result">
+
+                                <div class="result-value">
+                                    Simple: ₹${simpleInterest.toFixed(2)}
+                                </div>
+
+                                <div class="result-value" style="font-size:2.2rem;">
+                                    Compound: ₹${compoundInterest.toFixed(2)}
+                                </div>
+
+                                <div class="result-detail">
+                                    Maturity (Compound): ₹${compoundMaturity.toFixed(2)}
+                                </div>
+
+                                <button class="btn btn-sm btn-outline"
+                                    id="toggleYearly"
+                                    style="margin-top:15px;">
+                                    Yearly Growth ▼
+                                </button>
+
+                                <div id="yearlyTable"
+                                    style="display:none;margin-top:15px;">
+
+                                    <table class="gpa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Start</th>
+                                                <th>Interest</th>
+                                                <th>End</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            ${yearlyRows}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('interest', 'Interest', 
+                                `SI: ₹${simpleInterest.toFixed(0)} | CI: ₹${compoundInterest.toFixed(0)}`);
+
+                            document.getElementById('toggleYearly').addEventListener('click', function () {
+
+                                const table = document.getElementById('yearlyTable');
+
+                                if (table.style.display === 'none') {
+                                    table.style.display = 'block';
+                                    this.textContent = 'Hide Yearly Growth ▲';
+                                } else {
+                                    table.style.display = 'none';
+                                    this.textContent = 'Yearly Growth ▼';
+                                }
+
+                            });
+
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () =>
+                                copyToClipboard(
+                                    `Simple Interest: ₹${simpleInterest.toFixed(2)} | Compound Interest: ₹${compoundInterest.toFixed(2)} | Maturity: ₹${compoundMaturity.toFixed(2)}`
+                                );
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                principalInput.value = '';
+                                rateInput.value = '';
+                                timeInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                }
+            };
+
+            // ============ THEME TOGGLE ============
+            btnThemeToggle.addEventListener('click', () => {
+                const root = document.documentElement;
+                const isDark = root.style.getPropertyValue('--bg-primary').trim() === '#0a0a1a' || !root
+                    .style.getPropertyValue('--bg-primary');
+                if (isDark) {
+                    root.style.setProperty('--bg-primary', '#f5f5fa');
+                    root.style.setProperty('--bg-secondary', '#ffffff');
+                    root.style.setProperty('--bg-card', 'rgba(255,255,255,0.8)');
+                    root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.5)');
+                    root.style.setProperty('--border-glass', 'rgba(0,0,0,0.1)');
+                    root.style.setProperty('--text-primary', '#1a1a2e');
+                    root.style.setProperty('--text-secondary', '#444466');
+                    root.style.setProperty('--text-muted', '#777799');
+                    document.querySelector('.app-header').style.background = 'rgba(245,245,250,0.85)';
+                    document.querySelector('.app-header').style.borderBottomColor = 'rgba(0,0,0,0.08)';
+                    document.querySelectorAll('.modal-sheet').forEach(s => s.style.background = '#ffffff');
+                    btnThemeToggle.textContent = '🌙';
+                } else {
+                    root.style.setProperty('--bg-primary', '#0a0a1a');
+                    root.style.setProperty('--bg-secondary', '#12122a');
+                    root.style.setProperty('--bg-card', 'rgba(22,22,50,0.6)');
+                    root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.03)');
+                    root.style.setProperty('--border-glass', 'rgba(255,255,255,0.08)');
+                    root.style.setProperty('--text-primary', '#f0f0f5');
+                    root.style.setProperty('--text-secondary', '#b0b0c8');
+                    root.style.setProperty('--text-muted', '#7a7a9a');
+                    document.querySelector('.app-header').style.background = 'rgba(10,10,26,0.85)';
+                    document.querySelector('.app-header').style.borderBottomColor = 'rgba(255,255,255,0.08)';
+                    document.querySelectorAll('.modal-sheet').forEach(s => s.style.background = '#161632');
+                    btnThemeToggle.textContent = '🌓';
+                }
+            });
+
+            // ============ CLEAR RECENT ============
+            btnClearRecent.addEventListener('click', clearRecentCalculations);
+
+            // ============ INIT ============
+            renderRecentCalculations();
+
+            // Handle modal sheet scroll on mobile - prevent body scroll
+            modalSheet.addEventListener('touchmove', function(e) {
+                const scrollTop = modalSheet.scrollTop;
+                const scrollHeight = modalSheet.scrollHeight;
+                const clientHeight = modalSheet.clientHeight;
+                const atTop = scrollTop <= 0;
+                const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
+                if (atTop && e.touches[0].clientY > e.touches[0].clientY + 5) {
+                    // Swiping down at top - could close
+                }
+            }, { passive: true });
+
+            console.log('✅ Student Calculator Hub ready!');
+            console.log('📊 9 calculators available');
+            console.log('💾 LocalStorage enabled for recent calculations');
+            console.log('🌓 Dark/Light theme toggle ready');
+            console.log('🔧 All recent calculation fixes applied');
+        })();
+    </script>
+</body>
+</html>
