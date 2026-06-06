@@ -912,6 +912,94 @@
             overflow-y: auto;
             padding-right: 4px;
         }
+
+        .result-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-purple);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff, #c8c8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        /* Time Zone Converter Styles */
+        .timezone-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .timezone-day {
+            background: rgba(61, 217, 160, 0.2);
+            color: #3dd9a0;
+        }
+
+        .timezone-night {
+            background: rgba(124, 92, 252, 0.2);
+            color: #7c5cfc;
+        }
+
+        .current-time-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        .timezone-table {
+            width: 100%;
+            font-size: 0.8rem;
+        }
+
+        .timezone-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .timezone-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .timezone-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .timezone-day {
+            background: rgba(61, 217, 160, 0.2);
+            color: #3dd9a0;
+        }
+
+        .timezone-night {
+            background: rgba(124, 92, 252, 0.2);
+            color: #7c5cfc;
+        }
+
+        .current-time-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid #7c5cfc;
+        }
     </style>
 </head>
 <body>
@@ -1012,6 +1100,48 @@
                 <span class="card-icon">📈</span>
                 <span class="card-title">Interest</span>
                 <span class="card-desc">Simple & compound</span>
+            </div>
+
+            <!-- SIP Calculator -->
+            <div class="calc-card card-green" data-calc="sip">
+                <span class="card-icon">🏦</span>
+                <span class="card-title">SIP Calculator</span>
+                <span class="card-desc">Monthly investment growth</span>
+            </div>
+
+            <!-- FD Calculator -->
+            <div class="calc-card card-teal" data-calc="fd">
+                <span class="card-icon">💎</span>
+                <span class="card-title">FD Calculator</span>
+                <span class="card-desc">Fixed Deposit maturity amount</span>
+            </div>
+
+            <!-- Salary Calculator -->
+            <div class="calc-card card-blue" data-calc="salary">
+                <span class="card-icon">💵</span>
+                <span class="card-title">Salary Calculator</span>
+                <span class="card-desc">CTC → In-hand estimate</span>
+            </div>
+
+            <!-- Discount Calculator -->
+            <div class="calc-card card-orange" data-calc="discount">
+                <span class="card-icon">🧮</span>
+                <span class="card-title">Discount Calculator</span>
+                <span class="card-desc">Sale price and savings</span>
+            </div>
+
+            <!-- Data Storage Converter -->
+            <div class="calc-card card-cyan" data-calc="storage">
+                <span class="card-icon">⚡</span>
+                <span class="card-title">Data Storage</span>
+                <span class="card-desc">KB, MB, GB, TB converter</span>
+            </div>
+
+            <!-- Time Zone Converter -->
+            <div class="calc-card card-cyan" data-calc="timezone">
+                <span class="card-icon">🌍</span>
+                <span class="card-title">Time Zone</span>
+                <span class="card-desc">Convert time zones</span>
             </div>
         </div>
     </main>
@@ -1129,7 +1259,13 @@
                     date: '📅',
                     scientific: '🔬',
                     emi: '💰',
-                    interest: '📈'
+                    interest: '📈',
+                    sip: '🏦',
+                    fd: '💎',
+                    salary: '💵',
+                    discount: '🧮',
+                    storage: '⚡',
+                    timezone: '🌍'
                 };
                 return icons[type] || '🧮';
             }
@@ -2587,25 +2723,25 @@
                     title: 'Interest Calculator',
                     render() {
                         return `
-                  <div class="form-group">
-                    <label class="form-label">Investment Amount (₹)</label>
-                    <input type="number" class="form-input" id="intPrincipal" placeholder="e.g. 100000" step="any" min="0">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Annual Interest Rate (%)</label>
-                    <input type="number" class="form-input" id="intRate" placeholder="e.g. 7.5" step="any" min="0">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Time Period (Years)</label>
-                    <input type="number" class="form-input" id="intTime" placeholder="e.g. 5" step="any" min="0">
-                  </div>
-                  <button class="btn btn-primary" id="btnCalcInterest">Calculate Interest</button>
-                  <div id="intResult" style="margin-top:12px;"></div>
-                  <div class="btn-row" id="intActions" style="display:none;">
-                    <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
-                    <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
-                  </div>
-                `;
+                            <div class="form-group">
+                                <label class="form-label">Investment Amount (₹)</label>
+                                <input type="number" class="form-input" id="intPrincipal" placeholder="e.g. 100000" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Annual Interest Rate (%)</label>
+                                <input type="number" class="form-input" id="intRate" placeholder="e.g. 7.5" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Time Period (Years)</label>
+                                <input type="number" class="form-input" id="intTime" placeholder="e.g. 5" step="any" min="0">
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcInterest">Calculate Interest</button>
+                            <div id="intResult" style="margin-top:12px;"></div>
+                            <div class="btn-row" id="intActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
                     },
                     init() {
                         const btnCalc = document.getElementById('btnCalcInterest');
@@ -2635,45 +2771,48 @@
                                 const yearlyInterest = balance * (R / 100);
                                 balance += yearlyInterest;
                                 yearlyRows += `
-                                <tr>
-                                    <td>${year}</td>
-                                    <td>₹${startBalance.toFixed(0)}</td>
-                                    <td>₹${yearlyInterest.toFixed(0)}</td>
-                                    <td>₹${balance.toFixed(0)}</td>
-                                </tr>`;
+                                    <tr>
+                                        <td>${year}</td>
+                                        <td>₹${startBalance.toFixed(0)}</td>
+                                        <td>₹${yearlyInterest.toFixed(0)}</td>
+                                        <td>₹${balance.toFixed(0)}</td>
+                                    </tr>`;
                             }
 
                             resultDiv.innerHTML = `
-                            <div class="result-box detailed-result">
-                                <div class="result-value">Simple: ₹${simpleInterest.toFixed(2)}</div>
-                                <div class="result-value" style="font-size:2.2rem;">Compound: ₹${compoundInterest.toFixed(2)}</div>
-                                <div class="result-detail">Maturity (Compound): ₹${compoundMaturity.toFixed(2)}</div>
-                                <button class="btn btn-sm btn-outline" id="toggleYearly" style="margin-top:15px;">Yearly Growth ▼</button>
-                                <div id="yearlyTable" style="display:none;margin-top:15px;">
-                                    <table class="gpa-table">
-                                        <thead>
-                                            <tr><th>Year</th><th>Start</th><th>Interest</th><th>End</th></tr>
-                                        </thead>
-                                        <tbody>${yearlyRows}</tbody>
-                                    </table>
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">Simple: ₹${simpleInterest.toFixed(2)}</div>
+                                    <div class="result-value" style="font-size:2.2rem;">Compound: ₹${compoundInterest.toFixed(2)}</div>
+                                    <div class="result-detail">Maturity (Compound): ₹${compoundMaturity.toFixed(2)}</div>
+                                    <button class="btn btn-sm btn-outline" id="toggleYearly" style="margin-top:15px;">Yearly Growth ▼</button>
+                                    <div id="yearlyTable" style="display:none;margin-top:15px;">
+                                        <table class="gpa-table">
+                                            <thead>
+                                                <tr><th>Year</th><th>Start</th><th>Interest</th><th>End</th></tr>
+                                            </thead>
+                                            <tbody>${yearlyRows}</tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
                             `;
                             
                             actionsDiv.style.display = 'flex';
                             saveRecentCalculation('interest', 'Interest', 
                                 `SI: ₹${simpleInterest.toFixed(0)} | CI: ₹${compoundInterest.toFixed(0)}`);
 
-                            document.getElementById('toggleYearly').addEventListener('click', function () {
-                                const table = document.getElementById('yearlyTable');
-                                if (table.style.display === 'none') {
-                                    table.style.display = 'block';
-                                    this.textContent = 'Hide Yearly Growth ▲';
-                                } else {
-                                    table.style.display = 'none';
-                                    this.textContent = 'Yearly Growth ▼';
-                                }
-                            });
+                            const toggleBtn = document.getElementById('toggleYearly');
+                            if (toggleBtn) {
+                                toggleBtn.addEventListener('click', function () {
+                                    const table = document.getElementById('yearlyTable');
+                                    if (table.style.display === 'none') {
+                                        table.style.display = 'block';
+                                        this.textContent = 'Hide Yearly Growth ▲';
+                                    } else {
+                                        table.style.display = 'none';
+                                        this.textContent = 'Yearly Growth ▼';
+                                    }
+                                });
+                            }
 
                             actionsDiv.querySelector('.copy-result-btn').onclick = () =>
                                 copyToClipboard(`Simple Interest: ₹${simpleInterest.toFixed(2)} | Compound Interest: ₹${compoundInterest.toFixed(2)} | Maturity: ₹${compoundMaturity.toFixed(2)}`);
@@ -2686,8 +2825,566 @@
                             };
                         });
                     }
+                },
+
+                sip: {
+                    icon: '🏦',
+                    title: 'SIP Calculator',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Monthly Investment (₹)</label>
+                                <input type="number" class="form-input" id="sipAmount" placeholder="e.g. 5000" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Expected Return Rate (% p.a.)</label>
+                                <input type="number" class="form-input" id="sipRate" placeholder="e.g. 12" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Time Period (Years)</label>
+                                <input type="number" class="form-input" id="sipYears" placeholder="e.g. 10" step="any" min="0">
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcSip">Calculate SIP Returns</button>
+                            <div id="sipResult"></div>
+                            <div class="btn-row" id="sipActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnCalcSip');
+                        const amountInput = document.getElementById('sipAmount');
+                        const rateInput = document.getElementById('sipRate');
+                        const yearsInput = document.getElementById('sipYears');
+                        const resultDiv = document.getElementById('sipResult');
+                        const actionsDiv = document.getElementById('sipActions');
+
+                        if (!btn) return;
+
+                        btn.addEventListener('click', () => {
+                            const P = parseFloat(amountInput.value);
+                            const r = parseFloat(rateInput.value) / 100 / 12;
+                            const n = parseFloat(yearsInput.value) * 12;
+
+                            if (isNaN(P) || isNaN(r) || isNaN(n) || P <= 0 || n <= 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+
+                            const maturity = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+                            const invested = P * n;
+                            const returns = maturity - invested;
+
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-label">SIP Maturity:</div>
+                                    <div class="result-value">₹${maturity.toFixed(0)}</div>
+                                    <div class="result-table">
+                                        <div><span>Invested Amount</span><strong>₹${invested.toFixed(0)}</strong></div>
+                                        <div><span>Estimated Returns</span><strong>₹${returns.toFixed(0)}</strong></div>
+                                        <div><span>Total Value</span><strong>₹${maturity.toFixed(0)}</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('sip', 'SIP', `₹${maturity.toFixed(0)} (Invested: ₹${invested.toFixed(0)})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`SIP Maturity: ₹${maturity.toFixed(0)}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                amountInput.value = ''; 
+                                rateInput.value = ''; 
+                                yearsInput.value = '';
+                                resultDiv.innerHTML = ''; 
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                fd: {
+                    icon: '💎',
+                    title: 'FD Calculator',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Deposit Amount (₹)</label>
+                                <input type="number" class="form-input" id="fdPrincipal" placeholder="e.g. 100000" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Interest Rate (% p.a.)</label>
+                                <input type="number" class="form-input" id="fdRate" placeholder="e.g. 7.5" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Time Period (Years)</label>
+                                <input type="number" class="form-input" id="fdYears" placeholder="e.g. 5" step="any" min="0">
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcFd">Calculate FD Maturity</button>
+                            <div id="fdResult"></div>
+                            <div class="btn-row" id="fdActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnCalcFd');
+                        const principalInput = document.getElementById('fdPrincipal');
+                        const rateInput = document.getElementById('fdRate');
+                        const yearsInput = document.getElementById('fdYears');
+                        const resultDiv = document.getElementById('fdResult');
+                        const actionsDiv = document.getElementById('fdActions');
+
+                        if (!btn) return;
+
+                        btn.addEventListener('click', () => {
+                            const P = parseFloat(principalInput.value);
+                            const R = parseFloat(rateInput.value);
+                            const T = parseFloat(yearsInput.value);
+
+                            if (isNaN(P) || isNaN(R) || isNaN(T) || P <= 0 || T <= 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+
+                            const maturity = P * Math.pow(1 + R / 100, T);
+                            const interest = maturity - P;
+
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-label">FD Maturity:</div>
+                                    <div class="result-value">₹${maturity.toFixed(0)}</div>
+                                    <div class="result-table">
+                                        <div><span>Principal Amount</span><strong>₹${P.toFixed(0)}</strong></div>
+                                        <div><span>Total Interest</span><strong>₹${interest.toFixed(0)}</strong></div>
+                                        <div><span>Maturity Amount</span><strong>₹${maturity.toFixed(0)}</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('fd', 'FD', `₹${maturity.toFixed(0)} (Interest: ₹${interest.toFixed(0)})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`FD Maturity: ₹${maturity.toFixed(0)}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                principalInput.value = ''; 
+                                rateInput.value = ''; 
+                                yearsInput.value = '';
+                                resultDiv.innerHTML = ''; 
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                salary: {
+                    icon: '💵',
+                    title: 'Salary Calculator',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Annual CTC (₹)</label>
+                                <input type="number" class="form-input" id="ctcAmount" placeholder="e.g. 1200000" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Basic Salary (% of CTC)</label>
+                                <input type="number" class="form-input" id="basicPercent" placeholder="e.g. 40" step="any" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">HRA (% of Basic)</label>
+                                <input type="number" class="form-input" id="hraPercent" placeholder="e.g. 50" step="any" min="0" max="100">
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcSalary">Calculate In-hand Salary</button>
+                            <div id="salaryResult"></div>
+                            <div class="btn-row" id="salaryActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnCalcSalary');
+                        const ctcInput = document.getElementById('ctcAmount');
+                        const basicInput = document.getElementById('basicPercent');
+                        const hraInput = document.getElementById('hraPercent');
+                        const resultDiv = document.getElementById('salaryResult');
+                        const actionsDiv = document.getElementById('salaryActions');
+
+                        if (!btn) return;
+
+                        btn.addEventListener('click', () => {
+                            const ctc = parseFloat(ctcInput.value);
+                            const basicPct = parseFloat(basicInput.value);
+                            const hraPct = parseFloat(hraInput.value);
+
+                            if (isNaN(ctc) || isNaN(basicPct) || isNaN(hraPct) || ctc <= 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+
+                            const basic = ctc * basicPct / 100;
+                            const hra = basic * hraPct / 100;
+                            const pf = basic * 0.12;
+                            const professionalTax = 200 * 12;
+                            const taxableIncome = ctc - pf - professionalTax;
+                            let tax = 0;
+                            
+                            if (taxableIncome > 1500000) tax = (taxableIncome - 1500000) * 0.3 + 150000;
+                            else if (taxableIncome > 1250000) tax = (taxableIncome - 1250000) * 0.25 + 125000;
+                            else if (taxableIncome > 1000000) tax = (taxableIncome - 1000000) * 0.2 + 75000;
+                            else if (taxableIncome > 750000) tax = (taxableIncome - 750000) * 0.15 + 37500;
+                            else if (taxableIncome > 500000) tax = (taxableIncome - 500000) * 0.1 + 12500;
+                            else if (taxableIncome > 250000) tax = (taxableIncome - 250000) * 0.05;
+                            
+                            const totalDeductions = pf + professionalTax + tax;
+                            const inHandYearly = ctc - totalDeductions;
+                            const inHandMonthly = inHandYearly / 12;
+
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-label">Monthly In-hand:</div>
+                                    <div class="result-value">₹${inHandMonthly.toFixed(0)}/month</div>
+                                    <div class="result-table">
+                                        <div><span>Yearly In-hand</span><strong>₹${inHandYearly.toFixed(0)}</strong></div>
+                                        <div><span>Monthly In-hand</span><strong>₹${inHandMonthly.toFixed(0)}</strong></div>
+                                        <div><span>Income Tax</span><strong>₹${tax.toFixed(0)}</strong></div>
+                                        <div><span>PF Contribution</span><strong>₹${pf.toFixed(0)}</strong></div>
+                                        <div><span>Professional Tax</span><strong>₹${professionalTax.toFixed(0)}</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('salary', 'Salary', `₹${inHandMonthly.toFixed(0)}/month (CTC: ₹${ctc.toFixed(0)})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`Monthly In-hand: ₹${inHandMonthly.toFixed(0)}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                ctcInput.value = ''; 
+                                basicInput.value = ''; 
+                                hraInput.value = '';
+                                resultDiv.innerHTML = ''; 
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                discount: {
+                    icon: '🧮',
+                    title: 'Discount Calculator',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Original Price (₹)</label>
+                                <input type="number" class="form-input" id="originalPrice" placeholder="e.g. 5000" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Discount Percentage (%)</label>
+                                <input type="number" class="form-input" id="discountPercent" placeholder="e.g. 20" step="any" min="0" max="100">
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcDiscount">Calculate Discount</button>
+                            <div id="discountResult"></div>
+                            <div class="btn-row" id="discountActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnCalcDiscount');
+                        const priceInput = document.getElementById('originalPrice');
+                        const discountInput = document.getElementById('discountPercent');
+                        const resultDiv = document.getElementById('discountResult');
+                        const actionsDiv = document.getElementById('discountActions');
+
+                        if (!btn) return;
+
+                        btn.addEventListener('click', () => {
+                            const price = parseFloat(priceInput.value);
+                            const discountPct = parseFloat(discountInput.value);
+
+                            if (isNaN(price) || isNaN(discountPct) || price <= 0) {
+                                showToast('⚠️ Please enter valid values');
+                                return;
+                            }
+
+                            const discountAmount = price * discountPct / 100;
+                            const salePrice = price - discountAmount;
+                            const savings = discountAmount;
+
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">₹${salePrice.toFixed(0)}</div>
+                                    <div class="result-table">
+                                        <div><span>Original Price</span><strong>₹${price.toFixed(0)}</strong></div>
+                                        <div><span>Discount (${discountPct}%)</span><strong>₹${discountAmount.toFixed(0)}</strong></div>
+                                        <div><span>Sale Price</span><strong>₹${salePrice.toFixed(0)}</strong></div>
+                                        <div><span>Your Savings</span><strong style="color:#3dd9a0;">₹${savings.toFixed(0)}</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('discount', 'Discount', `Save ₹${savings.toFixed(0)} (Sale: ₹${salePrice.toFixed(0)})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`Sale Price: ₹${salePrice.toFixed(0)} | Save: ₹${savings.toFixed(0)}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                priceInput.value = ''; 
+                                discountInput.value = '';
+                                resultDiv.innerHTML = ''; 
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                storage: {
+                    icon: '⚡',
+                    title: 'Data Storage Converter',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Enter Value</label>
+                                <input type="number" class="form-input" id="storageValue" placeholder="e.g. 1024" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">From Unit</label>
+                                <select class="form-input" id="fromUnit">
+                                    <option value="b">Bytes (B)</option>
+                                    <option value="kb">Kilobytes (KB)</option>
+                                    <option value="mb">Megabytes (MB)</option>
+                                    <option value="gb">Gigabytes (GB)</option>
+                                    <option value="tb">Terabytes (TB)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="btnConvertStorage">Convert</button>
+                            <div id="storageResult"></div>
+                            <div class="btn-row" id="storageActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btn = document.getElementById('btnConvertStorage');
+                        const valueInput = document.getElementById('storageValue');
+                        const fromUnit = document.getElementById('fromUnit');
+                        const resultDiv = document.getElementById('storageResult');
+                        const actionsDiv = document.getElementById('storageActions');
+
+                        if (!btn) return;
+
+                        const multipliers = { b: 1, kb: 1024, mb: 1048576, gb: 1073741824, tb: 1099511627776 };
+                        const units = ['b', 'kb', 'mb', 'gb', 'tb'];
+                        const unitNames = { b: 'Bytes', kb: 'KB', mb: 'MB', gb: 'GB', tb: 'TB' };
+
+                        btn.addEventListener('click', () => {
+                            const value = parseFloat(valueInput.value);
+                            const from = fromUnit.value;
+
+                            if (isNaN(value) || value < 0) {
+                                showToast('⚠️ Please enter a valid number');
+                                return;
+                            }
+
+                            const bytes = value * multipliers[from];
+                            let results = '';
+                            
+                            units.forEach(unit => {
+                                const converted = bytes / multipliers[unit];
+                                results += `<div><span>${unitNames[unit]}</span><strong>${converted.toFixed(2)}</strong></div>`;
+                            });
+
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">${value} ${unitNames[from].toUpperCase()}</div>
+                                    <div class="result-table">
+                                        ${results}
+                                    </div>
+                                </div>
+                            `;
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('storage', 'Data Storage', `${value} ${unitNames[from].toUpperCase()}`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`${value} ${unitNames[from].toUpperCase()}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                valueInput.value = ''; 
+                                fromUnit.value = 'kb';
+                                resultDiv.innerHTML = ''; 
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                timezone: {
+                    icon: '🌍',
+                    title: 'Time Zone Converter',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">From Time Zone</label>
+                                <select class="form-input" id="fromTimezone">
+                                    <option value="IST">🇮🇳 IST - India (UTC+5:30)</option>
+                                    <option value="EST">🇺🇸 EST - New York (UTC-5)</option>
+                                    <option value="PST">🇺🇸 PST - Los Angeles (UTC-8)</option>
+                                    <option value="GMT">🇬🇧 GMT - London (UTC+0)</option>
+                                    <option value="CET">🇩🇪 CET - Berlin/Paris (UTC+1)</option>
+                                    <option value="JST">🇯🇵 JST - Tokyo (UTC+9)</option>
+                                    <option value="AEST">🇦🇺 AEST - Sydney (UTC+10)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">To Time Zone</label>
+                                <select class="form-input" id="toTimezone">
+                                    <option value="IST">🇮🇳 IST - India (UTC+5:30)</option>
+                                    <option value="EST">🇺🇸 EST - New York (UTC-5)</option>
+                                    <option value="PST">🇺🇸 PST - Los Angeles (UTC-8)</option>
+                                    <option value="GMT">🇬🇧 GMT - London (UTC+0)</option>
+                                    <option value="CET">🇩🇪 CET - Berlin/Paris (UTC+1)</option>
+                                    <option value="JST">🇯🇵 JST - Tokyo (UTC+9)</option>
+                                    <option value="AEST">🇦🇺 AEST - Sydney (UTC+10)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Time (24-hour format)</label>
+                                <input type="text" class="form-input" id="convertTime" placeholder="e.g. 14:30 (leave empty for current UTC time)">
+                            </div>
+                            
+                            <button class="btn btn-primary" id="btnConvertTime">Convert Time</button>
+                            
+                            <div id="timezoneResult" style="margin-top: 16px;"></div>
+                            
+                            <div class="btn-row" id="tzActions" style="display:none; margin-top: 16px;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        // Timezone offsets (hours from UTC)
+                        const timezoneOffsets = {
+                            'IST': 5.5,
+                            'EST': -4,   // New York (currently EDT)
+                            'PST': -7,   // Los Angeles (currently PDT)
+                            'GMT': 1,    // London (currently BST)
+                            'CET': 2,    // Berlin (currently CEST)
+                            'JST': 9,
+                            'AEST': 10
+                        };
+                        
+                        const timezoneNames = {
+                            'IST': 'Indian Standard Time',
+                            'EST': 'Eastern Standard Time',
+                            'PST': 'Pacific Standard Time',
+                            'GMT': 'Greenwich Mean Time',
+                            'CET': 'Central European Time',
+                            'JST': 'Japan Standard Time',
+                            'AEST': 'Australian Eastern Standard Time'
+                        };
+                        
+                        function formatTime(hours, minutes) {
+                            const period = hours >= 12 ? 'PM' : 'AM';
+                            const displayHours = hours % 12 || 12;
+                            return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+                        }
+                        
+                        function getCurrentUTC() {
+                            const now = new Date();
+                            return new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
+                        }
+                        
+                        // Convert Time
+                        const convertBtn = document.getElementById('btnConvertTime');
+                        const fromZone = document.getElementById('fromTimezone');
+                        const toZone = document.getElementById('toTimezone');
+                        const timeInput = document.getElementById('convertTime');
+                        const resultDiv = document.getElementById('timezoneResult');
+                        const actionsDiv = document.getElementById('tzActions');
+                        
+                        convertBtn.addEventListener('click', () => {
+                            // Get UTC time as base
+                            let utcDate = getCurrentUTC();
+                            const timeStr = timeInput.value;
+                            
+                            if (timeStr && timeStr.match(/^\d{1,2}:\d{2}$/)) {
+                                const [hours, minutes] = timeStr.split(':').map(Number);
+
+                                if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+
+                                    const sourceOffset = timezoneOffsets[fromZone.value];
+
+                                    utcDate = new Date(Date.UTC(
+                                        utcDate.getUTCFullYear(),
+                                        utcDate.getUTCMonth(),
+                                        utcDate.getUTCDate(),
+                                        hours,
+                                        minutes,
+                                        0
+                                    ));
+
+                                    utcDate = new Date(
+                                        utcDate.getTime() - (sourceOffset * 3600000)
+                                    );
+
+                                } else {
+                                    showToast('⚠️ Invalid time format');
+                                    return;
+                                }
+                            }
+                            
+                            const sourceZone = fromZone.value;
+                            const targetZone = toZone.value;
+                            
+                            // Calculate time in source zone
+                            const sourceOffset = timezoneOffsets[sourceZone] * 3600000;
+                            const sourceTime = new Date(utcDate.getTime() + sourceOffset);
+                            
+                            // Calculate time in target zone
+                            const targetOffset = timezoneOffsets[targetZone] * 3600000;
+                            const targetTime = new Date(utcDate.getTime() + targetOffset);
+                            
+                            const sourceHours = sourceTime.getUTCHours();
+                            const sourceMinutes = sourceTime.getUTCMinutes();
+                            const targetHours = targetTime.getUTCHours();
+                            const targetMinutes = targetTime.getUTCMinutes();
+                            
+                            const diff = timezoneOffsets[targetZone] - timezoneOffsets[sourceZone];
+                            let diffText = diff === 0 ? 'Same time' : `${Math.abs(diff)} hours ${diff > 0 ? 'ahead' : 'behind'}`;
+                            
+                            function getDayNightIcon(hours) {
+                                return hours >= 6 && hours < 18 ? '☀️' : '🌙';
+                            }
+                            
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result" style="text-align: center;">
+                                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px;">${targetZone} Time</div>
+                                    <div class="result-value" style="font-size: 2rem;">${formatTime(targetHours, targetMinutes)}</div>
+                                    <div class="result-table" style="margin-top: 12px; text-align: left;">
+                                        <div><span>${sourceZone} (${timezoneNames[sourceZone]})</span><strong>${formatTime(sourceHours, sourceMinutes)} ${getDayNightIcon(sourceHours)}</strong></div>
+                                        <div><span>${targetZone} (${timezoneNames[targetZone]})</span><strong>${formatTime(targetHours, targetMinutes)} ${getDayNightIcon(targetHours)}</strong></div>
+                                        <div><span>Time Difference</span><strong>${diffText}</strong></div>
+                                        <div><span>UTC Reference</span><strong>${formatTime(utcDate.getUTCHours(), utcDate.getUTCMinutes())} UTC</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('timezone', 'Time Zone', `${sourceZone} → ${targetZone}: ${formatTime(targetHours, targetMinutes)}`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`${formatTime(targetHours, targetMinutes)} ${targetZone}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                timeInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
                 }
+
+
             };
+
+            
 
             // ============ INIT ============
             console.log('✅ Student Calculator Hub ready!');
