@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <meta name="theme-color" content="#0a0a1a">
     <title>Student Calculator Hub</title>
     <style>
@@ -88,17 +89,14 @@
             gap: 12px;
             transition: var(--transition-smooth);
         }
-        .header-logo {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 16px rgba(124, 92, 252, 0.3);
+        .header-logo{
+            width:50px;
+            height:50px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:transparent;
+            box-shadow:none;
         }
         .header-info {
             flex: 1;
@@ -279,80 +277,79 @@
             overflow: hidden;
         }
 
-        /* ============ RECENT SECTION ============ */
-        .recent-section {
-            margin-top: 28px;
-            padding: 16px 0;
-        }
-        .recent-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+        /* ============ HISTORY MODAL ============ */
+        .history-empty-state {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
         }
-        .recent-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .history-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.6;
         }
-        .recent-chip {
+        .history-empty-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .history-item {
             background: var(--bg-glass);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 8px 14px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
             cursor: pointer;
             transition: var(--transition-fast);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
-            gap: 6px;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            gap: 12px;
         }
-        .recent-chip:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
         }
-        .recent-chip .chip-icon {
-            font-size: 0.85rem;
+        .history-item-icon {
+            font-size: 1.8rem;
             flex-shrink: 0;
         }
-        .recent-chip .chip-text {
+        .history-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .history-item-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        .history-item-result {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .empty-state {
+        .history-item-time {
+            font-size: 0.65rem;
             color: var(--text-muted);
-            font-size: 0.8rem;
-            font-style: italic;
-            padding: 8px 0;
+            margin-top: 2px;
         }
-        .clear-recent {
-            font-size: 0.7rem;
-            color: var(--accent-pink);
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 12px;
-            transition: var(--transition-fast);
-            margin-left: auto;
+        .history-actions{
+            display:flex;
+            gap:8px;
+            margin-top:12px;
+            padding-top:12px;
+            border-top:1px solid var(--border-glass);
+            background:#161632;
+            position:sticky;
+            bottom:0;
         }
-        .clear-recent:hover {
-            background: rgba(232, 93, 154, 0.15);
-        }
-
         /* ============ MODAL OVERLAY ============ */
         .modal-overlay {
             position: fixed;
@@ -483,8 +480,16 @@
             box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12);
             background: rgba(255, 255, 255, 0.06);
         }
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
+        .form-input,
+        .sci-btn,
+        .result-box,
+        .toast,
+        .gpa-table th,
+        .gpa-table td,
+        .result-table div,
+        .result-table span,
+        .result-table strong {
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
         }
         select.form-input{
             appearance:auto;
@@ -549,6 +554,15 @@
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 8px;
+        }
+        .btn-danger {
+            background: rgba(255, 80, 100, 0.2);
+            color: #ff8899;
+            border: 1px solid rgba(255, 80, 100, 0.3);
+        }
+        .btn-danger:hover {
+            background: rgba(255, 80, 100, 0.3);
+            color: #ffaabb;
         }
 
         /* ============ RESULT BOX ============ */
@@ -892,19 +906,35 @@
                 font-size: 1rem;
             }
         }
+
+        .history-scroll{
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
     </style>
 </head>
 <body>
 
     <!-- ============ HEADER ============ -->
     <header class="app-header">
-        <div class="header-logo">🧮</div>
+        <div class="header-logo">
+            <lottie-player
+                src="logo.json"
+                background="transparent"
+                speed="1"
+                style="width:80px;height:80px;"
+                loop
+                autoplay>
+            </lottie-player>
+        </div>
         <div class="header-info">
             <div class="header-title">Student Calculator Hub</div>
             <div class="header-subtitle">Developed By ~ Shankar Prasad Pyke </div>
         </div>
         <div class="header-actions">
-            <button class="btn-icon" id="btnThemeToggle" title="Toggle theme" aria-label="Toggle theme">🌓</button>
+            <!-- History Button (replaces theme toggle) -->
+            <button class="btn-icon" id="btnHistoryToggle" title="View History" aria-label="View History">📜</button>
         </div>
     </header>
 
@@ -936,59 +966,77 @@
                 <span class="card-title">SGPA Calculator</span>
                 <span class="card-desc">Semester GPA</span>
             </div>
-            <!-- Card 5: Marks Percentage -->
+            <!-- Add after existing cards -->
+            <div class="calc-card card-green" data-calc="ygpa">
+                <span class="card-icon">🎯</span>
+                <span class="card-title">YGPA</span>
+                <span class="card-desc">Yearly GPA from SGPAs</span>
+            </div>
+            <div class="calc-card card-orange" data-calc="sgpaToPercentage">
+                <span class="card-icon">🔄</span>
+                <span class="card-title">SGPA→%</span>
+                <span class="card-desc">Convert SGPA/YGPA to %</span>
+            </div>
+            <!-- Add this after the Interest card -->
+            <div class="calc-card card-cyan" data-calc="percentile">
+                <span class="card-icon">🏆</span>
+                <span class="card-title">Percentile</span>
+                <span class="card-desc">Calculate your rank percentile</span>
+            </div>
+            <!-- Card 8: Marks Percentage -->
             <div class="calc-card card-orange" data-calc="marks">
                 <span class="card-icon">📚</span>
                 <span class="card-title">Marks %</span>
                 <span class="card-desc">Marks percentage calc</span>
             </div>
-            <!-- Card 6: Date Difference -->
+            <!-- Card 9: Date Difference -->
             <div class="calc-card card-indigo" data-calc="date">
                 <span class="card-icon">📅</span>
                 <span class="card-title">Date Diff</span>
                 <span class="card-desc">Days between dates</span>
             </div>
-            <!-- Card 7: Scientific -->
+            <!-- Card 10: Scientific -->
             <div class="calc-card card-purple" data-calc="scientific">
                 <span class="card-icon">🔬</span>
                 <span class="card-title">Scientific</span>
                 <span class="card-desc">Advanced calculator</span>
             </div>
-            <!-- Card 8: EMI -->
+            <!-- Card 11: EMI -->
             <div class="calc-card card-green" data-calc="emi">
                 <span class="card-icon">💰</span>
                 <span class="card-title">EMI Calculator</span>
                 <span class="card-desc">Loan EMI & interest</span>
             </div>
-            <!-- Card 9: Interest -->
+            <!-- Card 12: Interest -->
             <div class="calc-card card-rose" data-calc="interest">
                 <span class="card-icon">📈</span>
                 <span class="card-title">Interest</span>
                 <span class="card-desc">Simple & compound</span>
             </div>
         </div>
-
-        <!-- Recent Calculations -->
-        <section class="recent-section" id="recentSection">
-            <div style="display:flex;align-items:center;gap:8px;">
-                <span class="recent-title">🕐 Recent Calculations</span>
-                <button class="clear-recent" id="btnClearRecent" style="display:none;">Clear All</button>
-            </div>
-            <div class="recent-list" id="recentList">
-                <span class="empty-state" id="emptyRecent">No calculations yet. Tap a calculator to get started!</span>
-            </div>
-        </section>
     </main>
 
-    <!-- ============ MODAL OVERLAY ============ -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-sheet" id="modalSheet">
+    <!-- ============ CALCULATOR MODAL OVERLAY ============ -->
+    <div class="modal-overlay" id="calcModalOverlay">
+        <div class="modal-sheet" id="calcModalSheet">
             <div class="modal-handle"></div>
             <div class="modal-header">
-                <span class="modal-title" id="modalTitle">Calculator</span>
-                <button class="btn-close" id="btnCloseModal">✕</button>
+                <span class="modal-title" id="calcModalTitle">Calculator</span>
+                <button class="btn-close" id="btnCloseCalcModal">✕</button>
             </div>
-            <div id="modalContent"></div>
+            <div id="calcModalContent"></div>
+        </div>
+    </div>
+
+    <!-- ============ HISTORY MODAL OVERLAY ============ -->
+    <div class="modal-overlay" id="historyModalOverlay">
+        <div class="modal-sheet" id="historyModalSheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <span class="modal-title">📜 Recent Calculations</span>
+                <button class="btn-close" id="btnCloseHistoryModal">✕</button>
+            </div>
+            <div id="historyModalContent"></div>
         </div>
     </div>
 
@@ -999,16 +1047,22 @@
         (function() {
             // ============ DOM REFS ============
             const calcGrid = document.getElementById('calcGrid');
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalSheet = document.getElementById('modalSheet');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-            const btnCloseModal = document.getElementById('btnCloseModal');
+            
+            // Calculator Modal
+            const calcModalOverlay = document.getElementById('calcModalOverlay');
+            const calcModalSheet = document.getElementById('calcModalSheet');
+            const calcModalTitle = document.getElementById('calcModalTitle');
+            const calcModalContent = document.getElementById('calcModalContent');
+            const btnCloseCalcModal = document.getElementById('btnCloseCalcModal');
+            
+            // History Modal
+            const historyModalOverlay = document.getElementById('historyModalOverlay');
+            const historyModalSheet = document.getElementById('historyModalSheet');
+            const historyModalContent = document.getElementById('historyModalContent');
+            const btnCloseHistoryModal = document.getElementById('btnCloseHistoryModal');
+            const btnHistoryToggle = document.getElementById('btnHistoryToggle');
+            
             const toastContainer = document.getElementById('toastContainer');
-            const recentList = document.getElementById('recentList');
-            const emptyRecent = document.getElementById('emptyRecent');
-            const btnClearRecent = document.getElementById('btnClearRecent');
-            const btnThemeToggle = document.getElementById('btnThemeToggle');
 
             const STORAGE_KEY = 'studentCalcHub_recent';
             let currentCalc = null;
@@ -1051,16 +1105,15 @@
                     icon: getCalcIcon(calcType)
                 });
                 
-                // Keep only last 20
-                const trimmed = filtered.slice(0, 20);
+                // Keep only last 50
+                const trimmed = filtered.slice(0, 50);
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
-                renderRecentCalculations();
             }
 
             function clearRecentCalculations() {
                 localStorage.removeItem(STORAGE_KEY);
-                renderRecentCalculations();
-                showToast('Recent calculations cleared');
+                renderHistoryModal();
+                showToast('🗑️ History cleared');
             }
 
             function getCalcIcon(type) {
@@ -1069,6 +1122,9 @@
                     gpa: '🎓',
                     cgpa: '📈',
                     sgpa: '📝',
+                    ygpa: '🎯',
+                    sgpaToPercentage: '🔄',
+                    percentile: '🏆',
                     marks: '📚',
                     date: '📅',
                     scientific: '🔬',
@@ -1078,40 +1134,90 @@
                 return icons[type] || '🧮';
             }
 
-            function renderRecentCalculations() {
+            function formatTime(timestamp) {
+                const now = new Date();
+                const date = new Date(timestamp);
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins} min ago`;
+                if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+                if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+                
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+
+            function renderHistoryModal() {
                 const recent = getRecentCalculations();
+                
                 if (recent.length === 0) {
-                    recentList.innerHTML = '<span class="empty-state">No calculations yet. Tap a calculator to get started!</span>';
-                    btnClearRecent.style.display = 'none';
+                    historyModalContent.innerHTML = `
+                        <div class="history-empty-state">
+                            <div class="history-empty-icon">📭</div>
+                            <div class="history-empty-text">No calculations yet</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+                                Tap any calculator to get started!
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    btnClearRecent.style.display = 'inline-block';
-                    recentList.innerHTML = recent.slice(0, 8).map((r, index) => `
-                        <div class="recent-chip" data-calc="${r.type}" data-index="${index}" title="${r.label}: ${r.result}">
-                            <span class="chip-icon">${r.icon || getCalcIcon(r.type)}</span>
-                            <span class="chip-text">${r.label}: <strong>${r.result}</strong></span>
+                    let itemsHTML = recent.map((r) => `
+                        <div class="history-item" data-calc="${r.type}" data-result="${r.result.replace(/"/g, '&quot;')}">
+                            <span class="history-item-icon">${r.icon || getCalcIcon(r.type)}</span>
+                            <div class="history-item-content">
+                                <div class="history-item-label">${r.label}</div>
+                                <div class="history-item-result">${r.result}</div>
+                                <div class="history-item-time">${formatTime(r.timestamp)}</div>
+                            </div>
                         </div>
                     `).join('');
                     
-                    // Add click handlers to all chips
-                    recentList.querySelectorAll('.recent-chip').forEach(chip => {
-                        chip.addEventListener('click', function() {
+                    historyModalContent.innerHTML = `
+                        <div class="history-scroll">
+                            ${itemsHTML}
+                        </div>
+
+                        <div class="history-actions">
+                            <button class="btn btn-sm btn-danger" id="btnClearHistory">
+                                🗑️ Clear All History
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add click handlers to history items
+                    historyModalContent.querySelectorAll('.history-item').forEach(item => {
+                        item.addEventListener('click', function() {
                             const calcType = this.dataset.calc;
-                            if (calcType && calculatorConfigs[calcType]) {
-                                openCalculator(calcType);
-                            }
+                            // Close history modal first
+                            closeHistoryModal();
+                            // Open calculator modal after a short delay
+                            setTimeout(() => {
+                                if (calcType && calculatorConfigs[calcType]) {
+                                    openCalculator(calcType);
+                                }
+                            }, 350);
                         });
                     });
+                    
+                    // Clear history button
+                    const clearBtn = document.getElementById('btnClearHistory');
+                    if (clearBtn) {
+                        clearBtn.addEventListener('click', clearRecentCalculations);
+                    }
                 }
             }
 
-            // ============ MODAL ============
+            // ============ CALCULATOR MODAL ============
             function openCalculator(calcType) {
                 currentCalc = calcType;
                 const config = calculatorConfigs[calcType];
                 if (!config) return;
-                modalTitle.innerHTML = `${config.icon} ${config.title}`;
-                modalContent.innerHTML = config.render();
-                modalOverlay.classList.add('active');
+                calcModalTitle.innerHTML = `${config.icon} ${config.title}`;
+                calcModalContent.innerHTML = config.render();
+                calcModalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
                 // Initialize calculator-specific logic
                 if (config.init) {
@@ -1119,24 +1225,46 @@
                 }
             }
 
-            function closeModal() {
-                modalOverlay.classList.remove('active');
+            function closeCalculatorModal() {
+                calcModalOverlay.classList.remove('active');
                 document.body.style.overflow = '';
                 currentCalc = null;
                 setTimeout(() => {
-                    modalContent.innerHTML = '';
+                    calcModalContent.innerHTML = '';
                 }, 350);
             }
 
-            btnCloseModal.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) closeModal();
+            btnCloseCalcModal.addEventListener('click', closeCalculatorModal);
+            calcModalOverlay.addEventListener('click', function(e) {
+                if (e.target === calcModalOverlay) closeCalculatorModal();
             });
 
-            // Close with Escape key
+            // ============ HISTORY MODAL ============
+            function openHistoryModal() {
+                renderHistoryModal();
+                historyModalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeHistoryModal() {
+                historyModalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            btnHistoryToggle.addEventListener('click', openHistoryModal);
+            btnCloseHistoryModal.addEventListener('click', closeHistoryModal);
+            historyModalOverlay.addEventListener('click', function(e) {
+                if (e.target === historyModalOverlay) closeHistoryModal();
+            });
+
+            // ============ KEYBOARD SHORTCUTS ============
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                    closeModal();
+                if (e.key === 'Escape') {
+                    if (historyModalOverlay.classList.contains('active')) {
+                        closeHistoryModal();
+                    } else if (calcModalOverlay.classList.contains('active')) {
+                        closeCalculatorModal();
+                    }
                 }
             });
 
@@ -1225,49 +1353,20 @@
                             else grade = 'F';
                             resultDiv.innerHTML = `
                             <div class="result-box detailed-result">
-
                                 <div class="result-value">${percentage}%</div>
-
                                 <div class="result-table">
-
-                                    <div>
-                                        <span>Obtained</span>
-                                        <strong>${obtained}</strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Total</span>
-                                        <strong>${total}</strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Fraction</span>
-                                        <strong>${obtained}/${total}</strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Decimal</span>
-                                        <strong>${decimal}</strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Difference</span>
-                                        <strong>${difference}</strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Grade</span>
-                                        <strong>${grade}</strong>
-                                    </div>
-
+                                    <div><span>Obtained</span><strong>${obtained}</strong></div>
+                                    <div><span>Total</span><strong>${total}</strong></div>
+                                    <div><span>Fraction</span><strong>${obtained}/${total}</strong></div>
+                                    <div><span>Decimal</span><strong>${decimal}</strong></div>
+                                    <div><span>Difference</span><strong>${difference}</strong></div>
+                                    <div><span>Grade</span><strong>${grade}</strong></div>
                                 </div>
-
                             </div>
                             `;
                             actionsDiv.style.display = 'flex';
                             saveRecentCalculation('percentage', 'Percentage',
                                 `${percentage}% (${obtained}/${total})`);
-                            // Copy button
                             actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(
                                 `${percentage}%`);
                             actionsDiv.querySelector('.reset-btn').onclick = () => {
@@ -1351,7 +1450,6 @@
                                 .remove());
                         });
 
-                        // Add remove handlers to initial rows
                         container.querySelectorAll('.remove-gpa-row').forEach(btn => {
                             btn.addEventListener('click', function() {
                                 const row = this.closest('.gpa-subject-row');
@@ -1389,15 +1487,12 @@
                             const gpa = (totalPoints / totalCredits).toFixed(2);
 
                             let tableRows = '';
-
                             rows.forEach(row => {
                                 const subject = row.querySelector('input[type="text"]').value || '-';
                                 const grade = row.querySelector('.gpa-grade').value;
                                 const credit = parseFloat(row.querySelector('.gpa-credit').value);
-
                                 if (!isNaN(grade) && !isNaN(credit) && credit > 0) {
                                     const points = (grade * credit).toFixed(1);
-
                                     tableRows += `
                                     <tr>
                                         <td>${subject}</td>
@@ -1410,27 +1505,16 @@
 
                             resultDiv.innerHTML = `
                             <div class="result-box detailed-result">
-
                                 <div class="result-value">GPA: ${gpa}</div>
-
                                 <div class="result-detail">
                                     Total Credits: ${totalCredits} | Grade Points: ${totalPoints.toFixed(1)}
                                 </div>
-
                                 <table class="gpa-table">
                                     <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Credits</th>
-                                            <th>Points</th>
-                                        </tr>
+                                        <tr><th>Subject</th><th>Grade</th><th>Credits</th><th>Points</th></tr>
                                     </thead>
-                                    <tbody>
-                                        ${tableRows}
-                                    </tbody>
+                                    <tbody>${tableRows}</tbody>
                                 </table>
-
                             </div>
                             `;
                             actionsDiv.style.display = 'flex';
@@ -1548,7 +1632,6 @@
                     icon: '📝',
                     title: 'SGPA Calculator',
                     render() {
-                        // SGPA is essentially the same as GPA for a single semester
                         return calculatorConfigs.gpa.render()
                             .replace(/GPA/g, 'SGPA')
                             .replace(/gpa-subject-row/g, 'sgpa-subject-row')
@@ -1625,7 +1708,6 @@
                             
                             const sgpa = (totalPoints / totalCredits).toFixed(2);
 
-                            // Build detailed table
                             let tableRows = '';
                             rows.forEach(row => {
                                 const subject = row.querySelector('input[type="text"]').value || '-';
@@ -1652,16 +1734,9 @@
                                 </div>
                                 <table class="gpa-table">
                                     <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Credits</th>
-                                            <th>Points</th>
-                                        </tr>
+                                        <tr><th>Subject</th><th>Grade</th><th>Credits</th><th>Points</th></tr>
                                     </thead>
-                                    <tbody>
-                                        ${tableRows}
-                                    </tbody>
+                                    <tbody>${tableRows}</tbody>
                                 </table>
                             </div>
                             `;
@@ -1676,6 +1751,372 @@
                                 container.querySelectorAll('.sgpa-grade').forEach(s => s.value = '');
                                 container.querySelectorAll('.sgpa-credit').forEach(i => i.value = '');
                                 container.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+                            };
+                        });
+                    }
+                },
+
+                ygpa: {
+                    icon: '🎯',
+                    title: 'YGPA Calculator',
+                    render() {
+                        return `
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Odd Sem SGPA</label>
+                                    <input type="number" class="form-input" id="oddSgpa" placeholder="0-10" step="any" min="0" max="10">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Total Subjects (Odd Sem)</label>
+                                    <input type="number" class="form-input" id="oddSubjects" placeholder="Count" step="1" min="1">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Even Sem SGPA</label>
+                                    <input type="number" class="form-input" id="evenSgpa" placeholder="0-10" step="any" min="0" max="10">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Total Subjects (Even Sem)</label>
+                                    <input type="number" class="form-input" id="evenSubjects" placeholder="Count" step="1" min="1">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcYgpa">Calculate YGPA</button>
+                            <div id="ygpaResult" style="margin-top:12px;"></div>
+                            <div class="btn-row" id="ygpaActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btnCalc = document.getElementById('btnCalcYgpa');
+                        const oddSgpaInput = document.getElementById('oddSgpa');
+                        const oddSubjectsInput = document.getElementById('oddSubjects');
+                        const evenSgpaInput = document.getElementById('evenSgpa');
+                        const evenSubjectsInput = document.getElementById('evenSubjects');
+                        const resultDiv = document.getElementById('ygpaResult');
+                        const actionsDiv = document.getElementById('ygpaActions');
+
+                        btnCalc.addEventListener('click', () => {
+                            // Get input values
+                            const oddSgpa = parseFloat(oddSgpaInput.value);
+                            const oddSubjects = parseInt(oddSubjectsInput.value);
+                            const evenSgpa = parseFloat(evenSgpaInput.value);
+                            const evenSubjects = parseInt(evenSubjectsInput.value);
+                            
+                            // Validation: Check if all fields are filled
+                            if (isNaN(oddSgpa) || isNaN(oddSubjects) || isNaN(evenSgpa) || isNaN(evenSubjects)) {
+                                showToast('⚠️ Please fill in all fields');
+                                return;
+                            }
+                            
+                            // Validation: SGPA must be between 0 and 10
+                            if (oddSgpa < 0 || oddSgpa > 10) {
+                                showToast('⚠️ Odd Semester SGPA should be between 0 and 10');
+                                return;
+                            }
+                            if (evenSgpa < 0 || evenSgpa > 10) {
+                                showToast('⚠️ Even Semester SGPA should be between 0 and 10');
+                                return;
+                            }
+                            
+                            // Validation: Subject count must be at least 1
+                            if (oddSubjects < 1) {
+                                showToast('⚠️ Number of subjects in Odd Semester must be at least 1');
+                                return;
+                            }
+                            if (evenSubjects < 1) {
+                                showToast('⚠️ Number of subjects in Even Semester must be at least 1');
+                                return;
+                            }
+                            
+                            // Calculate YGPA = ((Odd SGPA × Odd Subjects) + (Even SGPA × Even Subjects)) ÷ (Odd Subjects + Even Subjects)
+                            const totalSubjects = oddSubjects + evenSubjects;
+                            const weightedSum = (oddSgpa * oddSubjects) + (evenSgpa * evenSubjects);
+                            const ygpa = (weightedSum / totalSubjects).toFixed(2);
+                            
+                            // Total Marks = (Odd Subjects + Even Subjects) × 100
+                            const totalMarks = totalSubjects * 100;
+                            
+                            // Obtained Marks = (Odd SGPA × Odd Subjects × 10) + (Even SGPA × Even Subjects × 10)
+                            const obtainedMarks = (oddSgpa * oddSubjects * 10) + (evenSgpa * evenSubjects * 10);
+                            
+                            // Overall Percentage = (Obtained Marks ÷ Total Marks) × 100
+                            const overallPercentage = ((obtainedMarks / totalMarks) * 100).toFixed(2);
+                            
+                            // Calculate MAKAUT percentage for comparison
+                            const makautPercentage = ((ygpa - 0.75) * 10).toFixed(2);
+                            
+                            // Grade classification based on percentage
+                            let grade = '';
+                            let classification = '';
+                            if (overallPercentage >= 90) { grade = 'O'; classification = 'Outstanding'; }
+                            else if (overallPercentage >= 80) { grade = 'A+'; classification = 'Excellent'; }
+                            else if (overallPercentage >= 70) { grade = 'A'; classification = 'Very Good'; }
+                            else if (overallPercentage >= 60) { grade = 'B+'; classification = 'Good'; }
+                            else if (overallPercentage >= 50) { grade = 'B'; classification = 'Average'; }
+                            else if (overallPercentage >= 40) { grade = 'C'; classification = 'Pass'; }
+                            else { grade = 'F'; classification = 'Fail'; }
+                            
+                            // Display results in modern result card
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">YGPA: ${ygpa}</div>
+                                    <div class="result-table">
+                                        <div><span>Odd Semester SGPA</span><strong>${oddSgpa}</strong></div>
+                                        <div><span>Odd Subjects</span><strong>${oddSubjects}</strong></div>
+                                        <div><span>Even Semester SGPA</span><strong>${evenSgpa}</strong></div>
+                                        <div><span>Even Subjects</span><strong>${evenSubjects}</strong></div>
+                                        <div><span>Total Subjects</span><strong>${totalSubjects}</strong></div>
+                                        <div><span>Total Marks</span><strong>${totalMarks}</strong></div>
+                                        <div><span>Obtained Marks</span><strong>${obtainedMarks.toFixed(2)}</strong></div>
+                                        <div><span>Overall Percentage</span><strong>${overallPercentage}%</strong></div>
+                                        <div><span>Grade</span><strong>${grade}</strong></div>
+                                        <div><span>Classification</span><strong>${classification}</strong></div>
+                                        <div><span>MAKAUT Percentage</span><strong>${makautPercentage}%</strong></div>
+                                    </div>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; color: var(--text-muted);">
+                                        Formula: YGPA = ((Odd SGPA × Odd Subjects) + (Even SGPA × Even Subjects)) ÷ (Odd Subjects + Even Subjects)
+                                    </div>
+                                </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('ygpa', 'YGPA', `${ygpa} | ${overallPercentage}% (${totalMarks} marks)`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`YGPA: ${ygpa} | Percentage: ${overallPercentage}% | Obtained: ${obtainedMarks.toFixed(2)}/${totalMarks}`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                oddSgpaInput.value = '';
+                                oddSubjectsInput.value = '';
+                                evenSgpaInput.value = '';
+                                evenSubjectsInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                sgpaToPercentage: {
+                    icon: '🔄',
+                    title: 'SGPA/YGPA to Percentage',
+                    render() {
+                        return `
+                            <div class="form-group">
+                                <label class="form-label">Select Type</label>
+                                <select class="form-input" id="conversionType">
+                                    <option value="sgpa">SGPA</option>
+                                    <option value="ygpa">YGPA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Enter SGPA/YGPA</label>
+                                <input type="number" class="form-input" id="gpaInput" placeholder="Enter value (0-10)" step="any" min="0" max="10">
+                            </div>
+                            <button class="btn btn-primary" id="btnConvertToPercentage">Convert to Percentage</button>
+                            <div id="convertResult" style="margin-top:12px;"></div>
+                            <div class="btn-row" id="convertActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btnConvert = document.getElementById('btnConvertToPercentage');
+                        const typeSelect = document.getElementById('conversionType');
+                        const gpaInput = document.getElementById('gpaInput');
+                        const resultDiv = document.getElementById('convertResult');
+                        const actionsDiv = document.getElementById('convertActions');
+
+                        btnConvert.addEventListener('click', () => {
+                            const gpa = parseFloat(gpaInput.value);
+                            const type = typeSelect.value;
+                            
+                            if (isNaN(gpa)) {
+                                showToast('⚠️ Please enter a valid SGPA/YGPA value');
+                                return;
+                            }
+                            
+                            if (gpa < 0 || gpa > 10) {
+                                showToast('⚠️ GPA should be between 0 and 10');
+                                return;
+                            }
+                            
+                            // MAKAUT Formula: Percentage = (GPA - 0.75) × 10
+                            const percentage = ((gpa - 0.75) * 10).toFixed(2);
+                            
+                            // Grade classification based on percentage
+                            let grade = '';
+                            let classification = '';
+                            
+                            if (percentage >= 90) { grade = 'O'; classification = 'Outstanding'; }
+                            else if (percentage >= 80) { grade = 'A+'; classification = 'Excellent'; }
+                            else if (percentage >= 70) { grade = 'A'; classification = 'Very Good'; }
+                            else if (percentage >= 60) { grade = 'B+'; classification = 'Good'; }
+                            else if (percentage >= 50) { grade = 'B'; classification = 'Average'; }
+                            else if (percentage >= 40) { grade = 'C'; classification = 'Pass'; }
+                            else { grade = 'F'; classification = 'Fail'; }
+                            
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">${percentage}%</div>
+                                    <div class="result-table">
+                                        <div><span>${type.toUpperCase()}</span><strong>${gpa}</strong></div>
+                                        <div><span>Formula</span><strong>(${gpa} - 0.75) × 10</strong></div>
+                                        <div><span>Percentage</span><strong>${percentage}%</strong></div>
+                                        <div><span>Grade</span><strong>${grade}</strong></div>
+                                        <div><span>Classification</span><strong>${classification}</strong></div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('sgpaToPercentage', `${type.toUpperCase()} → %`, `${percentage}% (${type}: ${gpa})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`${percentage}%`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                gpaInput.value = '';
+                                typeSelect.value = 'sgpa';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
+                            };
+                        });
+                    }
+                },
+
+                percentile: {
+                    icon: '🏆',
+                    title: 'Percentile Calculator',
+                    render() {
+                        return `
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Your Rank</label>
+                                    <input type="number" class="form-input" id="yourRank" placeholder="Enter your rank" step="any" min="1">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Total Candidates</label>
+                                    <input type="number" class="form-input" id="totalCandidates" placeholder="Total candidates" step="any" min="1">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Total Marks</label>
+                                    <input type="number" class="form-input" id="totalMarks" placeholder="Maximum marks" step="any" min="0">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Marks Obtained</label>
+                                    <input type="number" class="form-input" id="marksObtained" placeholder="Your marks" step="any" min="0">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="btnCalcPercentile">Calculate Percentile</button>
+                            <div id="percentileResult" style="margin-top:12px;"></div>
+                            <div class="btn-row" id="percentileActions" style="display:none;">
+                                <button class="btn btn-sm btn-outline copy-result-btn">📋 Copy</button>
+                                <button class="btn btn-sm btn-outline reset-btn">🔄 Reset</button>
+                            </div>
+                        `;
+                    },
+                    init() {
+                        const btnCalc = document.getElementById('btnCalcPercentile');
+                        const rankInput = document.getElementById('yourRank');
+                        const totalInput = document.getElementById('totalCandidates');
+                        const totalMarksInput = document.getElementById('totalMarks');
+                        const marksInput = document.getElementById('marksObtained');
+                        const resultDiv = document.getElementById('percentileResult');
+                        const actionsDiv = document.getElementById('percentileActions');
+
+                        btnCalc.addEventListener('click', () => {
+                            // Get input values
+                            const rank = parseFloat(rankInput.value);
+                            const total = parseFloat(totalInput.value);
+                            const totalMarks = parseFloat(totalMarksInput.value);
+                            const obtainedMarks = parseFloat(marksInput.value);
+                            
+                            // Validation
+                            if (isNaN(rank) || isNaN(total)) {
+                                showToast('⚠️ Please enter Rank and Total Candidates');
+                                return;
+                            }
+                            
+                            if (rank < 1) {
+                                showToast('⚠️ Rank must be at least 1');
+                                return;
+                            }
+                            
+                            if (total < 1) {
+                                showToast('⚠️ Total candidates must be at least 1');
+                                return;
+                            }
+                            
+                            if (rank > total) {
+                                showToast('⚠️ Rank cannot be greater than total candidates');
+                                return;
+                            }
+                            
+                            // Calculate Percentile = ((Total Candidates - Rank) / Total Candidates) × 100
+                            const percentile = ((total - rank) / total * 100).toFixed(2);
+                            
+                            // Calculate percentage if marks are provided
+                            let percentage = null;
+                            let percentageText = '';
+                            if (!isNaN(totalMarks) && !isNaN(obtainedMarks) && totalMarks > 0) {
+                                percentage = ((obtainedMarks / totalMarks) * 100).toFixed(2);
+                                percentageText = `
+                                    <div><span>Total Marks</span><strong>${totalMarks}</strong></div>
+                                    <div><span>Marks Obtained</span><strong>${obtainedMarks}</strong></div>
+                                    <div><span>Percentage Score</span><strong>${percentage}%</strong></div>
+                                `;
+                            }
+                            
+                            // Determine performance level based on percentile
+                            let performanceLevel = '';
+                            let performanceColor = '';
+                            if (percentile >= 99.9) { performanceLevel = '🎯 Top 0.1% - Elite Performance!'; }
+                            else if (percentile >= 99) { performanceLevel = '⭐ Top 1% - Excellent!'; }
+                            else if (percentile >= 95) { performanceLevel = '🌟 Top 5% - Very Good!'; }
+                            else if (percentile >= 90) { performanceLevel = '👍 Top 10% - Good!'; }
+                            else if (percentile >= 75) { performanceLevel = '📈 Above Average'; }
+                            else if (percentile >= 50) { performanceLevel = '📊 Average'; }
+                            else if (percentile >= 25) { performanceLevel = '📉 Below Average'; }
+                            else { performanceLevel = '⚠️ Needs Improvement'; }
+                            
+                            // Calculate rank interpretation
+                            const studentsAbove = rank - 1;
+                            const studentsBelow = total - rank;
+                            const studentsAtSame = 1; // Assuming unique ranks
+                            
+                            // Display results
+                            resultDiv.innerHTML = `
+                                <div class="result-box detailed-result">
+                                    <div class="result-value">${percentile}th Percentile</div>
+                                    <div class="result-table">
+                                        <div><span>Your Rank</span><strong>${rank}</strong></div>
+                                        <div><span>Total Candidates</span><strong>${total.toLocaleString()}</strong></div>
+                                        ${percentageText}
+                                        <div><span>Performance</span><strong style="color: #7c5cfc;">${performanceLevel}</strong></div>
+                                        <div><span>Students Above You</span><strong>${studentsAbove}</strong></div>
+                                        <div><span>Students Below You</span><strong>${studentsBelow}</strong></div>
+                                        <div><span>Formula</span><strong>((Total - Rank) / Total) × 100</strong></div>
+                                    </div>
+                                    <div style="margin-top: 16px; padding: 12px; background: rgba(124, 92, 252, 0.15); border-radius: 12px; text-align: center;">
+                                        <span style="font-size: 0.85rem;">🏆 You are ahead of <strong>${studentsBelow}</strong> candidates (${((studentsBelow/total)*100).toFixed(1)}% of total)</span>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            actionsDiv.style.display = 'flex';
+                            saveRecentCalculation('percentile', 'Percentile', `${percentile}th percentile (Rank: ${rank}/${total})`);
+                            
+                            actionsDiv.querySelector('.copy-result-btn').onclick = () => copyToClipboard(`${percentile}th percentile | Rank: ${rank}/${total} | ${studentsBelow} candidates behind you`);
+                            actionsDiv.querySelector('.reset-btn').onclick = () => {
+                                rankInput.value = '';
+                                totalInput.value = '';
+                                totalMarksInput.value = '';
+                                marksInput.value = '';
+                                resultDiv.innerHTML = '';
+                                actionsDiv.style.display = 'none';
                             };
                         });
                     }
@@ -1765,13 +2206,10 @@
 
                             rows.forEach(row => {
                                 const subject = row.querySelector('input[type="text"]').value || '-';
-
                                 const obt = parseFloat(row.querySelector('.marks-obtained').value);
                                 const tot = parseFloat(row.querySelector('.marks-total').value);
-
                                 if (!isNaN(obt) && !isNaN(tot) && tot > 0) {
                                     const subPct = ((obt / tot) * 100).toFixed(1);
-
                                     tableRows += `
                                     <tr>
                                         <td>${subject}</td>
@@ -1784,28 +2222,16 @@
 
                             resultDiv.innerHTML = `
                             <div class="result-box detailed-result marks-result-card">
-
                                 <div class="result-value">${pct}%</div>
-
                                 <div class="result-detail">
                                     Total ${totalObtained} / ${totalMax}
                                 </div>
-
                                 <table class="gpa-table">
                                     <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Obt.</th>
-                                            <th>Total</th>
-                                            <th>%</th>
-                                        </tr>
+                                        <tr><th>Subject</th><th>Obt.</th><th>Total</th><th>%</th></tr>
                                     </thead>
-
-                                    <tbody>
-                                        ${tableRows}
-                                    </tbody>
+                                    <tbody>${tableRows}</tbody>
                                 </table>
-
                             </div>
                             `;
                             actionsDiv.style.display = 'flex';
@@ -1964,7 +2390,6 @@
                                     .replace(/x²/g, '**2')
                                     .replace(/xʸ/g, '**')
                                     .replace(/π/g, 'Math.PI');
-                                // Handle implicit multiplication like 2(3) -> 2*(3)
                                 expr = expr.replace(/(\d)\(/g, '$1*(');
                                 const result = Function('"use strict"; return (' + expr + ')')();
                                 lastResult = Number.isFinite(result) ? parseFloat(result.toPrecision(12))
@@ -2011,7 +2436,6 @@
                         document.getElementById('btnSciCopy').addEventListener('click', () => {
                             if (lastResult && lastResult !== 'Error' && lastResult !== '0') {
                                 copyToClipboard(lastResult);
-                                showToast('Result copied!');
                             } else {
                                 showToast('Nothing to copy');
                             }
@@ -2072,8 +2496,6 @@
                             const emi = (P * r * Math.pow(1 + r, N)) / (Math.pow(1 + r, N) - 1);
                             const totalPayable = emi * N;
                             const totalInterest = totalPayable - P;
-                            const principalPct = (P / totalPayable * 100).toFixed(1);
-                            const interestPct = (totalInterest / totalPayable * 100).toFixed(1);
 
                             let scheduleHTML = '';
                             let balance = P;
@@ -2081,9 +2503,7 @@
                             for (let month = 1; month <= Math.min(N, 12); month++) {
                                 const interestPart = balance * r;
                                 const principalPart = emi - interestPart;
-
                                 balance -= principalPart;
-
                                 scheduleHTML += `
                                 <tr>
                                     <td>${month}</td>
@@ -2096,55 +2516,28 @@
 
                             resultDiv.innerHTML = `
                             <div class="result-box detailed-result">
-
-                                <div class="result-value">
-                                    ₹${emi.toFixed(0)}/mo
-                                </div>
-
+                                <div class="result-value">₹${emi.toFixed(0)}/mo</div>
                                 <div class="result-detail">
-                                    Total Interest: ₹${totalInterest.toFixed(0)}
-                                    |
-                                    Total Payable: ₹${totalPayable.toFixed(0)}
+                                    Total Interest: ₹${totalInterest.toFixed(0)} | Total Payable: ₹${totalPayable.toFixed(0)}
                                 </div>
-
                                 <div class="pie-container">
                                     <canvas id="emiPieChart" class="pie-canvas" width="120" height="120"></canvas>
                                 </div>
-
-                                <button class="btn btn-sm btn-outline"
-                                    id="toggleSchedule"
-                                    style="margin-top:15px;">
-                                    Show Schedule ▼
-                                </button>
-
-                                <div id="scheduleTable"
-                                    style="display:none;margin-top:15px;">
-
+                                <button class="btn btn-sm btn-outline" id="toggleSchedule" style="margin-top:15px;">Show Schedule ▼</button>
+                                <div id="scheduleTable" style="display:none;margin-top:15px;">
                                     <table class="gpa-table">
                                         <thead>
-                                            <tr>
-                                                <th>Month</th>
-                                                <th>EMI</th>
-                                                <th>Interest</th>
-                                                <th>Principal</th>
-                                                <th>Balance</th>
-                                            </tr>
+                                            <tr><th>Month</th><th>EMI</th><th>Interest</th><th>Principal</th><th>Balance</th></tr>
                                         </thead>
-
-                                        <tbody>
-                                            ${scheduleHTML}
-                                        </tbody>
+                                        <tbody>${scheduleHTML}</tbody>
                                     </table>
-
                                 </div>
-
                             </div>
                             `;
                             actionsDiv.style.display = 'flex';
                             saveRecentCalculation('emi', 'EMI',
                                 `₹${emi.toFixed(2)}/mo (Total: ₹${totalPayable.toFixed(0)})`);
 
-                            // Draw pie chart
                             setTimeout(() => {
                                 const canvas = document.getElementById('emiPieChart');
                                 if (canvas) {
@@ -2159,17 +2552,14 @@
                                     ctx.fill();
                                     ctx.beginPath();
                                     ctx.moveTo(60, 60);
-                                    ctx.arc(60, 60, 50, -Math.PI / 2 + pAngle, -Math.PI / 2 + Math
-                                        .PI * 2);
+                                    ctx.arc(60, 60, 50, -Math.PI / 2 + pAngle, -Math.PI / 2 + Math.PI * 2);
                                     ctx.fillStyle = '#e85d9a';
                                     ctx.fill();
                                 }
                             }, 150);
 
                             document.getElementById('toggleSchedule').addEventListener('click', function () {
-
                                 const table = document.getElementById('scheduleTable');
-
                                 if (table.style.display === 'none') {
                                     table.style.display = 'block';
                                     this.textContent = 'Hide Schedule ▲';
@@ -2177,13 +2567,10 @@
                                     table.style.display = 'none';
                                     this.textContent = 'Show Schedule ▼';
                                 }
-
                             });
 
                             actionsDiv.querySelector('.copy-result-btn').onclick = () =>
-                                copyToClipboard(
-                                    `EMI: ₹${emi.toFixed(2)}/month | Total: ₹${totalPayable.toFixed(2)}`
-                                    );
+                                copyToClipboard(`EMI: ₹${emi.toFixed(2)}/month | Total: ₹${totalPayable.toFixed(2)}`);
                             actionsDiv.querySelector('.reset-btn').onclick = () => {
                                 principalInput.value = '';
                                 rateInput.value = '';
@@ -2244,12 +2631,9 @@
                             let balance = P;
 
                             for (let year = 1; year <= Math.min(T, 10); year++) {
-
                                 const startBalance = balance;
                                 const yearlyInterest = balance * (R / 100);
-
                                 balance += yearlyInterest;
-
                                 yearlyRows += `
                                 <tr>
                                     <td>${year}</td>
@@ -2261,45 +2645,18 @@
 
                             resultDiv.innerHTML = `
                             <div class="result-box detailed-result">
-
-                                <div class="result-value">
-                                    Simple: ₹${simpleInterest.toFixed(2)}
-                                </div>
-
-                                <div class="result-value" style="font-size:2.2rem;">
-                                    Compound: ₹${compoundInterest.toFixed(2)}
-                                </div>
-
-                                <div class="result-detail">
-                                    Maturity (Compound): ₹${compoundMaturity.toFixed(2)}
-                                </div>
-
-                                <button class="btn btn-sm btn-outline"
-                                    id="toggleYearly"
-                                    style="margin-top:15px;">
-                                    Yearly Growth ▼
-                                </button>
-
-                                <div id="yearlyTable"
-                                    style="display:none;margin-top:15px;">
-
+                                <div class="result-value">Simple: ₹${simpleInterest.toFixed(2)}</div>
+                                <div class="result-value" style="font-size:2.2rem;">Compound: ₹${compoundInterest.toFixed(2)}</div>
+                                <div class="result-detail">Maturity (Compound): ₹${compoundMaturity.toFixed(2)}</div>
+                                <button class="btn btn-sm btn-outline" id="toggleYearly" style="margin-top:15px;">Yearly Growth ▼</button>
+                                <div id="yearlyTable" style="display:none;margin-top:15px;">
                                     <table class="gpa-table">
                                         <thead>
-                                            <tr>
-                                                <th>Year</th>
-                                                <th>Start</th>
-                                                <th>Interest</th>
-                                                <th>End</th>
-                                            </tr>
+                                            <tr><th>Year</th><th>Start</th><th>Interest</th><th>End</th></tr>
                                         </thead>
-
-                                        <tbody>
-                                            ${yearlyRows}
-                                        </tbody>
+                                        <tbody>${yearlyRows}</tbody>
                                     </table>
-
                                 </div>
-
                             </div>
                             `;
                             
@@ -2308,9 +2665,7 @@
                                 `SI: ₹${simpleInterest.toFixed(0)} | CI: ₹${compoundInterest.toFixed(0)}`);
 
                             document.getElementById('toggleYearly').addEventListener('click', function () {
-
                                 const table = document.getElementById('yearlyTable');
-
                                 if (table.style.display === 'none') {
                                     table.style.display = 'block';
                                     this.textContent = 'Hide Yearly Growth ▲';
@@ -2318,13 +2673,10 @@
                                     table.style.display = 'none';
                                     this.textContent = 'Yearly Growth ▼';
                                 }
-
                             });
 
                             actionsDiv.querySelector('.copy-result-btn').onclick = () =>
-                                copyToClipboard(
-                                    `Simple Interest: ₹${simpleInterest.toFixed(2)} | Compound Interest: ₹${compoundInterest.toFixed(2)} | Maturity: ₹${compoundMaturity.toFixed(2)}`
-                                );
+                                copyToClipboard(`Simple Interest: ₹${simpleInterest.toFixed(2)} | Compound Interest: ₹${compoundInterest.toFixed(2)} | Maturity: ₹${compoundMaturity.toFixed(2)}`);
                             actionsDiv.querySelector('.reset-btn').onclick = () => {
                                 principalInput.value = '';
                                 rateInput.value = '';
@@ -2337,63 +2689,12 @@
                 }
             };
 
-            // ============ THEME TOGGLE ============
-            btnThemeToggle.addEventListener('click', () => {
-                const root = document.documentElement;
-                const isDark = root.style.getPropertyValue('--bg-primary').trim() === '#0a0a1a' || !root
-                    .style.getPropertyValue('--bg-primary');
-                if (isDark) {
-                    root.style.setProperty('--bg-primary', '#f5f5fa');
-                    root.style.setProperty('--bg-secondary', '#ffffff');
-                    root.style.setProperty('--bg-card', 'rgba(255,255,255,0.8)');
-                    root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.5)');
-                    root.style.setProperty('--border-glass', 'rgba(0,0,0,0.1)');
-                    root.style.setProperty('--text-primary', '#1a1a2e');
-                    root.style.setProperty('--text-secondary', '#444466');
-                    root.style.setProperty('--text-muted', '#777799');
-                    document.querySelector('.app-header').style.background = 'rgba(245,245,250,0.85)';
-                    document.querySelector('.app-header').style.borderBottomColor = 'rgba(0,0,0,0.08)';
-                    document.querySelectorAll('.modal-sheet').forEach(s => s.style.background = '#ffffff');
-                    btnThemeToggle.textContent = '🌙';
-                } else {
-                    root.style.setProperty('--bg-primary', '#0a0a1a');
-                    root.style.setProperty('--bg-secondary', '#12122a');
-                    root.style.setProperty('--bg-card', 'rgba(22,22,50,0.6)');
-                    root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.03)');
-                    root.style.setProperty('--border-glass', 'rgba(255,255,255,0.08)');
-                    root.style.setProperty('--text-primary', '#f0f0f5');
-                    root.style.setProperty('--text-secondary', '#b0b0c8');
-                    root.style.setProperty('--text-muted', '#7a7a9a');
-                    document.querySelector('.app-header').style.background = 'rgba(10,10,26,0.85)';
-                    document.querySelector('.app-header').style.borderBottomColor = 'rgba(255,255,255,0.08)';
-                    document.querySelectorAll('.modal-sheet').forEach(s => s.style.background = '#161632');
-                    btnThemeToggle.textContent = '🌓';
-                }
-            });
-
-            // ============ CLEAR RECENT ============
-            btnClearRecent.addEventListener('click', clearRecentCalculations);
-
             // ============ INIT ============
-            renderRecentCalculations();
-
-            // Handle modal sheet scroll on mobile - prevent body scroll
-            modalSheet.addEventListener('touchmove', function(e) {
-                const scrollTop = modalSheet.scrollTop;
-                const scrollHeight = modalSheet.scrollHeight;
-                const clientHeight = modalSheet.clientHeight;
-                const atTop = scrollTop <= 0;
-                const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
-                if (atTop && e.touches[0].clientY > e.touches[0].clientY + 5) {
-                    // Swiping down at top - could close
-                }
-            }, { passive: true });
-
             console.log('✅ Student Calculator Hub ready!');
             console.log('📊 9 calculators available');
-            console.log('💾 LocalStorage enabled for recent calculations');
-            console.log('🌓 Dark/Light theme toggle ready');
-            console.log('🔧 All recent calculation fixes applied');
+            console.log('📜 History modal with button toggle');
+            console.log('💾 LocalStorage enabled for history');
+            console.log('🔄 Theme toggle removed, history moved to modal');
         })();
     </script>
 </body>
